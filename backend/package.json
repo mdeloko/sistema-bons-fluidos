@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "description": "Backend do sistema para o projeto de extensão \"Bons Fluidos\" da UTFPR - CP.",
+  "keywords": [
+    "TypeScript",
+    "Express",
+    "Axios",
+    "Estoque",
+    "UTFPR"
+  ],
+  "homepage": "https://github.com/mdeloko/sistema-bons-fluidos#readme",
+  "bugs": {
+    "url": "https://github.com/mdeloko/sistema-bons-fluidos/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdeloko/sistema-bons-fluidos.git"
+  },
+  "license": "ISC",
+  "author": "Erik G. Coutinho e Gian Pedro Rodrigues",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build":"npx tsc",
+    "run":"node --env-file=./.env ./dist/server.js",
+    "tsc:w": "npx tsc --watch",
+    "dev": "node --env-file=./.env.dev --watch ./dist/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "typescript": "^5.8.3"
+  }
+}
