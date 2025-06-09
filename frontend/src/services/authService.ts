@@ -1,32 +1,33 @@
-// scr/services/authService.ts
+// src/services/authService.ts - VERSÃO PARA BACKEND REAL
 import axios from 'axios';
 
-//TODO - Adapte a URL real do back end
-const API_URL = 'http://localhost:YOUR_BACKEND_PORT/api/auth';
+const API_URL = 'http://localhost:5000/api/auth'; // Ex: 'http://localhost:3333/api/auth'
 
-export const registrarUsuario = async (dadosRegistro: any) => {
-    //any deve ser substituido por uma interface mais específica
-    //ex: interface RegistroData {email: string, ra: string, senha: string, ...}
-    try{
-        const response = await axios.post('${API_URL}/register', dadosRegistro);
-        return response.data; //É esperado que o backend retorne os dados do usuário ou algum token
-    }catch (error) {
-        if (axios.isAxiosError(error) &&error.response) {
-            throw new Error(error.response.data.message || 'Erro ao registrar o usuário.');
-        }
-        throw new Error('Erro desconhecido ao registrar o usuário.');
+// interfaces de dados (RegisterData, LoginCredentials, LoginResponse) devem estar aqui e alinhadas ao backend.
+export interface RegisterData { /* ... */ }
+export interface LoginCredentials { /* ... */ }
+export interface LoginResponse { /* ... */ }
+
+export const registerUser = async (data: RegisterData): Promise<any> => {
+  try {
+    const response = await axios.post<any>(`${API_URL}/register`, data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Erro ao registrar o usuário.');
     }
+    throw new Error('Erro desconhecido ao registrar o usuário.');
+  }
 };
 
-export const loginUsuario = async (credenciais: any) => {
-    //ex: interface LoginCredential { loginFiel: string, senha: string}
-    try{
-        const response = await axios.post('${API_URL}/login', credenciais);
-        return response.data; //Espera-se que o backend retorne { token: 'seuTokenJWT', user: {...} }
-    }catch (error) {
-        if (axios.isAxiosError(error) &&error.response) {
-            throw new Error(error.response.data.message || 'Erro ao fazer login.');
-        }
-        throw new Error('Erro desconhecido ao fazer login.');
+export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+  try {
+    const response = await axios.post<LoginResponse>(`${API_URL}/login`, credentials);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'Erro ao fazer login.');
     }
+    throw new Error('Erro desconhecido ao fazer login.');
+  }
 };

@@ -1,66 +1,62 @@
-// src/pages/LoginPage.tsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginUsuario } from '../services/authService'; // Ajuste o caminho
-import { useAuth } from '../contexts/AuthContext'; // Ajuste o caminho
-import styles from '../styles/LoginPage.module.css';
+import { loginUser, type LoginCredentials } from '../services/authService'; // Use loginUser e tipagem
+import { useAuth } from '../contexts/AuthContext'; // Ajuste o caminho se necessário
+import styles from '../styles/LoginPage.module.css'; // Ajuste o caminho se necessário
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Função do seu AuthContext
+  const { login } = useAuth(); // Pega a função de login do AuthContext
 
-  const [loginField, setLoginField] = useState(''); // Pode ser email ou RA
-  const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [ra, setRa] = useState(''); // Estado para o RA
+  const [password, setPassword] = useState(''); // Estado para a senha
+  const [error, setError] = useState<string | null>(null); // Estado para mensagens de erro
+  const [loading, setLoading] = useState(false); // Estado para indicar carregamento
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErro(null);
-    setLoading(true);
+    e.preventDefault(); // Previne o comportamento padrão do formulário (recarregar a página)
+    setError(null);    // Limpa erros anteriores
+    setLoading(true);  // Ativa o estado de carregamento
 
     try {
-      // O backend precisa saber se está recebendo email ou RA,
-      // ou você pode ter um campo único que o backend resolve.
-      // Exemplo simples:
-      const response = await loginUsuario({ loginField, senha });
-      login(response.token); // Salva o token no AuthContext e localStorage
-      navigate('/'); // Navega para a página principal/dashboard
-    } catch (error: any) {
-      setErro(error.message || 'Falha no login.');
+      const credentials: LoginCredentials = { ra, password }; // Cria o objeto de credenciais
+      const response = await loginUser(credentials); // Chama a função de login do serviço
+      login(response.token); // Chama a função login do AuthContext para salvar o token e redirecionar
+      // O navigate é chamado dentro do login do AuthContext, então não precisa aqui.
+    } catch (err: any) {
+      setError(err.message || 'Falha no login. Verifique seu RA e senha.');
     } finally {
-      setLoading(false);
+      setLoading(false); // Desativa o estado de carregamento
     }
   };
 
-
   return (
-   <div className={styles.container}>
+    <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>LOGIN</h2>
-        {erro && <p className={styles.error}>{erro}</p>}
+        {error && <p className={styles.error}>{error}</p>} {/* Exibe mensagens de erro */}
         <input
-          type="text" // Pode ser 'email' ou 'text' se aceitar RA
-          name="loginField"
-          placeholder="Digite seu E-mail ou RA"
-          value={loginField}
-          onChange={(e) => setLoginField(e.target.value)}
+          type="text"
+          name="ra"
+          placeholder="Digite seu RA"
+          value={ra}
+          onChange={(e) => setRa(e.target.value)}
           required
           className={styles.input}
         />
         <input
           type="password"
-          name="senha"
+          name="password" // Nome do campo para a senha
           placeholder="Digite sua Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
         />
         <button type="submit" disabled={loading} className={styles.button}>
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
-        <p style={{textAlign: 'center', marginTop: '20px'}}>
+        <p style={{ textAlign: 'center', marginTop: '20px' }}>
           Não tem uma conta? <Link to="/registro" className={styles.link}>Registrar-se</Link>
         </p>
       </form>

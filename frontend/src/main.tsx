@@ -1,13 +1,14 @@
+// src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { AppRouter } from './router'; // Ou o caminho para seu componente de rotas
-import { AuthProvider } from './contexts/AuthContext'; // Importe o AuthProvider
-import './styles/index.css'; // Seus estilos globais
+import App from './App.tsx';
+import './styles/index.module.css'; // ou seu CSS global
+import { BrowserRouter as Router } from 'react-router-dom'; // Importe o Router aqui
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider> {/* Envolva o AppRouter (ou seu App principal) com o AuthProvider */}
-      <AppRouter />
-    </AuthProvider>
+    <Router> {}
+      <App /> {}
+    </Router>
   </React.StrictMode>,
 );

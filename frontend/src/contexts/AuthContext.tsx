@@ -1,45 +1,74 @@
-import React, { createContext, useState, useContext, type ReactNode, useEffect } from 'react';
+// src/context/AuthContext.tsx
+import React, { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// Interface para definir o que o contexto vai fornecer
+// 1. Interface para definir o que o contexto de autenticação vai fornecer.
+// Isso garante que o TypeScript saiba quais propriedades estão disponíveis para quem usar 'useAuth'.
 interface AuthContextType {
-  isAuthenticated: boolean;
-  token: string | null;
-  isLoading: boolean; // Para saber se ainda estamos verificando o token inicial
-  login: (newToken: string) => void;
-  logout: () => void;
+  isAuthenticated: boolean; // Indica se o usuário está logado (true se houver um token)
+  token: string | null;     // Armazena o token JWT. Será null se o usuário não estiver logado.
+  isLoading: boolean;       // Indica se o provedor ainda está verificando o token inicial (ex: do localStorage).
+  login: (newToken: string) => void; // Função para efetuar o login, recebendo o token JWT.
+  logout: () => void;       // Função para efetuar o logout do usuário.
 }
 
-// Cria o Context com um valor inicial undefined (ou um valor default se preferir)
+// 2. Criação do Contexto.
+// O valor inicial é 'undefined' para que o hook 'useAuth' possa verificar se está sendo usado
+// fora de um 'AuthProvider' e lançar um erro apropriado.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Componente Provedor que envolverá parte da sua aplicação
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Inicia carregando
+// 3. Props para o componente AuthProvider.
+// 'children' é usado para renderizar os componentes filhos que serão envolvidos pelo provedor.
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-  // Efeito para carregar o token do localStorage quando o AuthProvider é montado
+// 4. Componente AuthProvider.
+// Ele é responsável por gerenciar o estado global de autenticação da aplicação.
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  // Estado 'token': Armazena o token JWT.
+  // Inicialmente, tenta recuperar o token do localStorage (para persistência de sessão).
+  const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
+
+  // Estado 'isLoading': Gerencia o estado de carregamento inicial.
+  // Começa como 'true' porque o provedor precisa verificar o localStorage.
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Hook 'useNavigate': Permite a navegação programática (redirecionar o usuário).
+  const navigate = useNavigate();
+
+  // 5. Efeito colateral para gerenciar o token no localStorage.
+  // Este useEffect é executado uma vez na montagem do componente,
+  // e sempre que o 'token' mudar.
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    if (storedToken) {
-      setToken(storedToken);
-      // Aqui você poderia adicionar uma chamada para validar o token com o backend
-      // se o token expira ou pode ser invalidado no servidor.
+    // Se há um token no estado, salva-o no localStorage.
+    if (token) {
+      localStorage.setItem('authToken', token);
+    } else {
+      // Se não há token (ex: após logout), remove-o do localStorage.
+      localStorage.removeItem('authToken');
     }
-    setIsLoading(false); // Finaliza o estado de carregamento inicial
-  }, []);
+    // Uma vez que a verificação inicial do localStorage foi feita, o carregamento inicial termina.
+    setIsLoading(false);
+  }, [token]); // Dependência: Este efeito roda novamente sempre que o valor de 'token' muda.
 
+
+  // 6. Função 'login':
+  // Chamada para autenticar o usuário. Recebe o novo token JWT do backend.
   const login = (newToken: string) => {
-    localStorage.setItem('authToken', newToken);
-    setToken(newToken);
+    setToken(newToken); // Atualiza o estado do token. O useEffect acima cuidará do localStorage.
+    navigate('/dashboard'); // Redireciona o usuário para o dashboard após o login.
   };
 
+  // 7. Função 'logout':
+  // Chamada para desautenticar o usuário.
   const logout = () => {
-    localStorage.removeItem('authToken');
-    setToken(null);
-    // Geralmente, você também vai querer redirecionar para a tela de login aqui
-    // Isso pode ser feito no componente que chama logout() usando useNavigate()
+    setToken(null); // Limpa o token do estado. O useEffect acima cuidará do localStorage.
+    navigate('/login'); // Redireciona o usuário para a página de login.
   };
 
+  // 8. O Provedor renderiza seus filhos e passa o objeto de contexto.
+  // 'isAuthenticated' é um booleano que é 'true' se 'token' não for null ou string vazia.
   return (
     <AuthContext.Provider value={{ isAuthenticated: !!token, token, isLoading, login, logout }}>
       {children}
@@ -47,11 +76,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Hook customizado para facilitar o uso do contexto nos componentes
+// 9. Hook customizado 'useAuth':
+// Facilita o consumo do contexto de autenticação por qualquer componente funcional.
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext); // Tenta acessar o contexto.
+  // Se o contexto for 'undefined', significa que o hook foi usado fora de um 'AuthProvider'.
   if (context === undefined) {
     throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
-  return context;
+  return context; // Retorna o objeto completo do contexto (estado e funções).
 };

@@ -1,0 +1,137 @@
+/* src/components/Navbar.module.css */
+
+.navbar {
+  background-color: #2c0313;
+  color: white;
+  padding: 10px 25px; /* Aumenta um pouco o padding lateral */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra mais visível e suave */
+  height: 60px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Estilos para o Título/Logo do Sistema */
+.navbarBrand {
+  margin-right: 30px; /* Espaço entre o logo e os links */
+}
+
+.brandLink {
+  color: white;
+  text-decoration: none;
+  font-size: 1.8em; /* Tamanho maior para o título */
+  font-weight: 700; /* Mais bold */
+  letter-spacing: 0.05em; /* Espaçamento entre letras */
+  transition: color 0.3s ease;
+}
+
+.brandLink:hover {
+  color: #f48fb1; /* Cor suave no hover para o logo */
+}
+
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-grow: 1; /* Permite que a lista de links ocupe espaço */
+  justify-content: flex-start; /* Alinha os links à esquerda (após o logo) */
+}
+
+.navItem {
+  margin-right: 30px; /* Mais espaço entre os itens de navegação */
+}
+
+.navItem:last-child {
+  margin-right: 0;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05em;
+  padding: 5px 0; /* Adiciona um pequeno padding vertical para o hover */
+  transition: color 0.3s ease, border-bottom 0.3s ease; /* Transições mais complexas */
+  position: relative; /* Para a linha inferior no hover/ativo */
+}
+
+.navLink:hover {
+  color: #f48fb1; /* Rosa suave no hover */
+}
+
+.navLink::after { /* Linha inferior sutil no hover/ativo */
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -3px;
+  left: 0;
+  background-color: #f48fb1; /* Cor da linha */
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%; /* Expande a linha no hover */
+}
+
+/* ESTILO PARA O LINK ATIVO */
+.activeLink {
+  color: #e91e63 !important; /* Cor vibrante para o link ativo */
+  font-weight: 600; /* Mais bold */
+}
+
+.activeLink::after {
+  width: 100%; /* Linha sempre visível para o link ativo */
+  background-color: #e91e63; /* Cor da linha ativa */
+}
+
+.logoutButton {
+  background-color: #e91e63;
+  color: white;
+  padding: 8px 18px; /* Mais padding no botão */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Adiciona transform para elevação */
+}
+
+.logoutButton:hover {
+  background-color: #d81b60;
+  transform: translateY(-2px); /* Efeito de elevação no hover */
+}
+
+/* Responsividade para a Navbar - Pode precisar de um menu hambúrguer para celular no futuro */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 15px 10px; /* Mais padding em telas pequenas */
+  }
+  .navbarBrand {
+    margin-bottom: 15px; /* Espaçamento abaixo do logo */
+    margin-right: 0;
+  }
+  .navList {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px; /* Espaçamento abaixo da lista */
+  }
+  .navItem {
+    margin-right: 0;
+    margin-bottom: 10px; /* Mais espaçamento entre itens empilhados */
+  }
+  .logoutButton {
+    width: 90%; /* Ocupa mais largura em telas pequenas */
+    margin-top: 10px;
+  }
+}

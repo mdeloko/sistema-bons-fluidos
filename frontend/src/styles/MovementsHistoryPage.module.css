@@ -1,0 +1,152 @@
+/* src/styles/MovementsHistoryPage.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  /* O fundo da página será do pageContainer (PageLayout.module.css) */
+  /* min-height e width também serão do pageContainer */
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #374151;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #1e293b;
+  font-size: 2.5em;
+  font-weight: 500;
+}
+
+.actionsBar {
+    width: 100%;
+    max-width: 1000px; /* Largura máxima da barra de ações */
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.primaryButton { /* Botão para adicionar nova movimentação */
+  background-color: #f48fb1; /* Rosa suave */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primaryButton:hover {
+  background-color: #ec407a; /* Rosa vibrante no hover */
+  transform: translateY(-2px);
+}
+
+.loadingMessage, .errorMessage, .noDataMessage {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1em;
+    color: #555;
+}
+
+.errorMessage {
+    color: #e74c3c;
+    background-color: #ffebeb;
+    border: 1px solid #e74c3c;
+    border-radius: 5px;
+}
+
+.tableContainer {
+    width: 100%;
+    max-width: 1000px;
+    overflow-x: auto; /* Permite rolar horizontalmente em telas pequenas */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.movementsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.movementsTable th,
+.movementsTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.movementsTable th {
+  background-color: #f9fafb;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.movementsTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.movementsTable tbody tr:hover {
+  background-color: #f0f4f8;
+}
+
+/* Estilos para o tipo de movimentação */
+.typeEntry {
+    color: #28a745; /* Verde para entrada */
+    font-weight: bold;
+}
+
+.typeExit {
+    color: #dc3545; /* Vermelho para saída */
+    font-weight: bold;
+}
+
+/* Responsividade para a tabela */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 15px;
+  }
+  .tableContainer {
+    border: 0;
+  }
+  .movementsTable thead {
+    display: none;
+  }
+  .movementsTable tr {
+    margin-bottom: 10px;
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .movementsTable td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    font-size: 1em;
+  }
+  .movementsTable td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 15px;
+    font-weight: bold;
+    text-align: left;
+    color: #4b5563;
+  }
+}
