@@ -28,10 +28,12 @@
     "dev": "node --env-file=./.env.dev --watch ./dist/server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "mariadb": "^3.4.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.21",
     "typescript": "^5.8.3"
