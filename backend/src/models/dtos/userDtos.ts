@@ -19,12 +19,7 @@ export type UpdateUserEmailDTO = {
 	oldEmail?: string;
 	newEmail: string;
 };
-export type UpdatedUserDTO = {
-	name: string;
-	ra: string;
-	email: string;
-    password?: string;
-};
+
 export type DeleteUserDTO = {
 	ra?: string;
 	email?: string;
