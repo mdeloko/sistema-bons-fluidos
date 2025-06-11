@@ -1,5 +1,5 @@
 import DBConnection from "../../utils/db.js";
-import { CreateUserDTO, FullUserDTO, SafeUserDTO, UpdateUserNameDTO } from "../dtos/userDtos.js";
+import { CreateUserDTO, DeleteUserDTO, FullUserDTO, SafeUserDTO, UpdateUserEmailDTO, UpdateUserNameDTO, UpdateUserPasswordDTO } from "../dtos/userDtos.js";
 import {SqlError,UpsertResult} from "mariadb";
 
 export class UserRepository{
@@ -71,9 +71,9 @@ export class UserRepository{
         }
     }
     /**
-     * 
+     * Atualiza o nome de um usuário.
      * @param user Um UpdateUserNameDTO com um dado a ser buscado e o nome a ser atualizado.
-     * @returns 
+     * @returns Um SafeUserDTO com as novas informações caso de certo o update, ou null caso dê errado. 
      */
     public static async updateName(user:UpdateUserNameDTO):Promise<SafeUserDTO|null>{
         const {name,email,ra} = user;
@@ -87,11 +87,11 @@ export class UserRepository{
             );
             if(result.affectedRows > 0 ){
                 if(email){
-                    const newSafeUser:SafeUserDTO = await this.searchByEmail(email) as SafeUserDTO
-                    return newSafeUser;
+                    const safeUser:SafeUserDTO = await this.searchByEmail(email) as SafeUserDTO
+                    return safeUser;
                 }else if(ra){
-                    const newSafeUser:SafeUserDTO = await this.searchByRa(ra) as SafeUserDTO
-                    return newSafeUser;
+                    const safeUser:SafeUserDTO = await this.searchByRa(ra) as SafeUserDTO
+                    return safeUser;
                 }
             }
             return null;
@@ -100,7 +100,89 @@ export class UserRepository{
             throw new Error("Não foi possível atualizar nome de usuário.")
         }
     }
-    public static async delete(){
-
+    /**
+     * Atualiza a senha de um usuário.
+     * @param user Um objeto UpdateUserPasswordDTO com a senha nova a ser atualizada e o método de indentificação do usuário.
+     * @returns Um objeto SafeUserDTO caso a operação tenha sido realizada com sucesso, ou null caso não.
+     */
+    public static async updatePassword(user:UpdateUserPasswordDTO):Promise<SafeUserDTO|null>{
+        const password = user.password;
+        const toConsult = user.email || user.ra;
+        const idMethod = user.ra ? "ra" : "email";
+        await using db = await DBConnection.connect();
+        try{
+            const result:UpsertResult = await db.query(
+                `UPDATE users SET password = ? WHERE ${idMethod} = ?;`,
+                [password,toConsult]
+            );
+            if(result.affectedRows > 0){
+                if(user.email){
+                    const safeUser:SafeUserDTO = await this.searchByEmail(user.email) as SafeUserDTO;
+                    return safeUser;
+                }
+                else if(user.ra){
+                    const safeUser:SafeUserDTO = await this.searchByRa(user.ra) as SafeUserDTO;
+                    return safeUser;
+                }
+            }
+            return null;
+        }catch(error){
+            console.error("Erro:"+error);
+            throw new Error("Não foi possível atualizar a senha do usuário.");
+        }
+    }
+    /**
+     * Atualiza o e-mail de um usuário.
+     * @param user Um objeto UpdateUserEmailDTO com o email a ser atualizado e o método de identificação do Usuário.
+     * @returns Um objeto SafeUserDTO com as novas informações atualizadas.
+     */
+    public static async updateEmail(user:UpdateUserEmailDTO):Promise<SafeUserDTO|null>{
+        const newEmail = user.newEmail;
+        const toConsult = user.oldEmail || user.ra;
+        const idMethod = user.ra ? "ra" : "email";
+        await using db = await DBConnection.connect();
+        try{
+            const result:UpsertResult = await db.query(
+                `UPDATE users SET email = ? WHERE ${idMethod} = ?;`,
+                [newEmail,toConsult]
+            );
+            if(result.affectedRows > 0){
+                if(user.oldEmail){
+                    const safeUser:SafeUserDTO = await this.searchByEmail(user.newEmail) as SafeUserDTO;
+                    return safeUser;
+                }
+                else if(user.ra){
+                    const safeUser:SafeUserDTO = await this.searchByRa(user.ra) as SafeUserDTO;
+                    return safeUser;
+                }
+            }
+            return null;
+        }catch(error){
+            console.error("Erro:"+error);
+            throw new Error("Não foi possível atualizar o e-mail do usuário.");
+        }
+    }
+    /**
+     * Deleta usuário do banco de dados.
+     * @param user Um objeto DeleteUserDTO com as informações para buscar o usuário a ser deletado.
+     * @returns Um boolean true caso tenha sido possível, um false caso não tenha encontrado o usuário.
+     */
+    public static async delete(user:DeleteUserDTO):Promise<boolean>{
+        const toDelete = user.ra || user.email;
+        const idMethod = user.ra? "ra" : "email";
+        await using db = await DBConnection.connect();
+        try{
+            const result:UpsertResult = await db.query(
+                `DELETE FROM users WHERE ${idMethod} = ?;`,
+                [toDelete]
+            );
+            if(result.affectedRows>0){
+                return true;
+            }
+            return false;
+        }catch(error){
+            console.error("Erro:"+error);
+            throw new Error("Não foi possível deletar usuário.")
+        }
     }
 }
