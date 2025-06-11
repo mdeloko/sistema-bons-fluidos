@@ -17,11 +17,6 @@ server.get("/",(req, res) => {
     res.status(httpResponses.OK).json(body);
 });
 
-
-
 server.listen(PORT, (error) =>
     error ? console.error(error) : console.log("Servidor rodando na porta", PORT)
 );
-
-
-
