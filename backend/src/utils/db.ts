@@ -5,6 +5,13 @@ const user = process.env.DB_USER
 const password = process.env.DB_PASS
 const database = process.env.DB_NAME
 
+const pool = mariadb.createPool({
+	host,
+	user,
+	password,
+	connectionLimit: 5,
+	database,
+});
 
 export default class DBConnection{
     private connection:PoolConnection;
@@ -16,7 +23,7 @@ export default class DBConnection{
     async [Symbol.asyncDispose](){
         if(this.connection){
             await this.connection.end()
-            console.log("Conexão fechada")
+            console.log("Conexão devolvida ao Pool.")
         }
     }
     async query<T=any>(sql:string,params?:any[]){
@@ -26,14 +33,6 @@ export default class DBConnection{
         return await this.connection.execute(sql,params);
     }
     static async connect():Promise<DBConnection>{
-        const pool = mariadb.createPool({
-            host,
-            user,
-            password,
-            connectionLimit: 5,
-            database,
-        });
-
         const conn = await pool.getConnection();
         return new DBConnection(conn);
     }
