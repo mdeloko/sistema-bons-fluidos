@@ -3,6 +3,7 @@ export type CreateUserDTO = {
 	ra: string;
 	email: string;
 	password: string;
+	isAdmin:boolean;
 };
 export type UpdateUserNameDTO = {
 	ra?: string;
@@ -29,6 +30,7 @@ export type SafeUserDTO = {
     name: string;
     ra: string;
     email: string;
+	isAdmin:boolean;
 }
 
 export type FullUserDTO = {
@@ -36,4 +38,5 @@ export type FullUserDTO = {
 	ra: string;
 	email: string;
 	password: string;
+	isAdmin:boolean;
 };
