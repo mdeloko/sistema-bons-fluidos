@@ -1,7 +1,14 @@
 import { Router } from "express";
 import {EHttpStatusCode as httpStatus} from "../@types/httpStatusCode.js"
+import { UserRepository } from "../models/repositories/userRepository.js";
+import { UserService } from "../models/services/userService.js";
+import { UserController } from "../controllers/userController.js";
 
 export const router = Router({mergeParams:true});
+
+const userRepo = new UserRepository()
+const userService = new UserService(userRepo);
+const userController = new UserController(userService);
 
 router.get("/",(req,res) => {
     res.status(httpStatus.BAD_REQUEST).json({
@@ -27,16 +34,9 @@ router.get("/ar/:ar", (req, res) => {
     });
 });
 
-router.post("/",(req,res)=>{
-    const {ar,name,password,email,isAdmin} = req.body;
-    //TODO: Implementar inserção no banco. UserController.
-});
+router.post("/",userController.createUser.bind(userController));
 
-router.put("/",(req,res)=>{
-    const { valueToSearch, valueToUpdateTo } = req.body;
-    //TODO: Implementar lógica de encontrar o dado de busca(Aqui), buscar no banco por este dado e atualizar o usuário(UserController).
-
-});
+router.put("/",userController.updateUser.bind(userController));
 
 router.delete("/",(req,res) => {
     const { valueToSearch } = req.body;
