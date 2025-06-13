@@ -5,9 +5,10 @@ import { router as usersRouter } from "./routes/users.js";
 
 const PORT = process.env.PORT || 3000;
 const server = express();
+
+server.use(express.json());
 server.use("/products",productsRouter);
 server.use("/users",usersRouter);
-server.use(express.json());
 
 server.get("/",(req, res) => {
     const body = {
