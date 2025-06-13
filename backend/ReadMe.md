@@ -36,12 +36,14 @@ DB_HOST=
 DB_USER=
 DB_PASS=
 DB_NAME=
+DB_PORT=
 ```
 - `PORT` - Número da porta para o servidor backend abrir;
 - `DB_HOST` - Endereço DNS/IP do banco MariaDB;
 - `DB_USER` - Usuário que vai acessar o banco de dados;
 - `DB_PASS` - Senha desse usuário de acesso;
-- `DB_NAME` - Nome da tabela que será usada na aplicação.
+- `DB_NAME` - Nome da tabela que será usada na aplicação;
+- `DB_PORT` - Porta do banco de dados a ser utilizado.
 
 [Voltar ao Índice](#índice)
 
@@ -59,7 +61,7 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 
 ```json
 {
-    "ar":"7654321",
+    "ra":"7654321",
     "name":"Foo Bar",
     "password":"123123",
     "email":"example@mail.com",
@@ -69,8 +71,11 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 >PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
 ```json
 {
-    "valueToSearch":"ar | email",
-    "valueToUpdateTo":"1234567 | foo@bar.com",
+    "field":"name|ra|email|password",
+    "valueToUpdateTo":"str",
+    //Escolha um dos 2 abaixo para enviar
+    "email":"str",
+    "ra":"str"
 }
 ```
 >DELETE - Envie com o corpo listado abaixo, e caso a exclusão no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
