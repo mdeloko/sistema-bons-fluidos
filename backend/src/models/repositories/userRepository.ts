@@ -1,6 +1,6 @@
 import DBConnection from "../../utils/db.js";
 import { CreateUserDTO, DeleteUserDTO, FullUserDTO, SafeUserDTO, UpdateUserEmailDTO, UpdateUserNameDTO, UpdateUserPasswordDTO } from "../dtos/userDtos.js";
-import {SqlError,UpsertResult} from "mariadb";
+import {QueryResult,QueryResultRow,DatabaseError} from "pg";
 
 export class UserRepository{
     /**
@@ -8,18 +8,18 @@ export class UserRepository{
      * @param user Um CreateUserDTO com os dados do usuário a ser criado.
      * @returns O objeto do usuário criado sem a sua senha.
      */
-    public static async create(user:CreateUserDTO):Promise<SafeUserDTO>{
+    public async create(user:CreateUserDTO):Promise<SafeUserDTO>{
         await using db = await DBConnection.connect()
-        const {name,email,password,ra} = user;
+        const {name,email,password,ra,isAdmin} = user;
         try{
             await db.query(
-                "INSERT INTO users (ra,email,name,password) VALUES (?,?,?,?);",
-                [ra,email,name,password]
+                "INSERT INTO users (ra,email,name,pw_hash,\"isAdmin\") VALUES ($1,$2,$3,$4,$5);",
+                [ra,email,name,password,isAdmin]
             );
-            const safeUser:SafeUserDTO = {name,email,ra};
+            const safeUser:SafeUserDTO = {name,email,ra,isAdmin};
             return safeUser;
         }catch(error){
-            if(error instanceof SqlError && error.code === "ER_DUP_ENTRY" ) {
+            if(error instanceof DatabaseError && error.code === "ER_DUP_ENTRY" ) {
                 throw new Error("O RA/Email está em uso.")
             }
             throw new Error("Não foi possível criar usuário no BD.")
@@ -31,18 +31,18 @@ export class UserRepository{
      * @param ra string contendo o R.A. a ser buscado.
      * @returns Um SafeUserDTO com os dados do usuário encontrado, ou null caso não o encontre.
      */
-    public static async searchByRa(ra: string):Promise<SafeUserDTO|null>{
+    public async searchByRa(ra: string):Promise<SafeUserDTO|null>{
         await using db = await DBConnection.connect()
         try{
-            const rows:FullUserDTO[] = await db.query("SELECT * FROM users WHERE ra = ? ;",[ra]);
-            if(rows && rows.length > 0){
-                const {name,ra,email} = rows[0];
-                const safeUser:SafeUserDTO = { name, ra, email };
+            const rows = await db.query("SELECT * FROM users WHERE ra = $1 ;",[ra]);
+            if(rows && rows.rowCount){
+                const {name,ra,email,isAdmin} = rows.rows[0] as unknown as SafeUserDTO;
+                const safeUser:SafeUserDTO = { name, ra, email, isAdmin };
                 return safeUser;
             }
             return null;
         }catch(error){
-            if(error instanceof SqlError){
+            if(error instanceof DatabaseError){
                 throw new Error("Erro: "+error.message);
             }
             throw new Error("Erro:"+error);
@@ -53,18 +53,18 @@ export class UserRepository{
      * @param email string contendo o email a ser buscado.
      * @returns Um SafeUserDTO com os dados do usuário encontrado, ou null caso não o encontre.
      */
-    public static async searchByEmail(email:string):Promise<SafeUserDTO|null>{
+    public async searchByEmail(email:string):Promise<SafeUserDTO|null>{
         await using db = await DBConnection.connect()
         try{
-            const rows: FullUserDTO[] = await db.query("SELECT * FROM users WHERE email = ? ;",[email]);
-            if(rows && rows.length > 0){
-                const {name,ra,email} = rows[0];
-                const safeUser:SafeUserDTO = { name, ra, email };
+            const rows = await db.query("SELECT * FROM users WHERE email = $1 ;",[email]);
+            if(rows && rows.rowCount){
+                const {name,ra,email, isAdmin} = rows.rows[0] as unknown as SafeUserDTO;
+                const safeUser:SafeUserDTO = { name, ra, email, isAdmin };
                 return safeUser;
             }
             return null;
         }catch(error){
-            if(error instanceof SqlError){
+            if(error instanceof DatabaseError){
                 throw new Error("Erro: "+error.message);
             }
             throw new Error("Erro:"+error);
@@ -75,17 +75,17 @@ export class UserRepository{
      * @param user Um UpdateUserNameDTO com um dado a ser buscado e o nome a ser atualizado.
      * @returns Um SafeUserDTO com as novas informações caso de certo o update, ou null caso dê errado. 
      */
-    public static async updateName(user:UpdateUserNameDTO):Promise<SafeUserDTO|null>{
+    public async updateName(user:UpdateUserNameDTO):Promise<SafeUserDTO|null>{
         const {name,email,ra} = user;
         const toConsult = ra||email;
         const id = ra ? 'ra' : 'email';
         await using db = await DBConnection.connect();
         try{
-            const result:UpsertResult = await db.query(
-                `UPDATE users SET name = ? WHERE ${id} = ?`,
+            const result = await db.query(
+                `UPDATE users SET name = $1 WHERE ${id} = $2`,
                 [name,toConsult]
             );
-            if(result.affectedRows > 0 ){
+            if(result.rowCount){
                 if(email){
                     const safeUser:SafeUserDTO = await this.searchByEmail(email) as SafeUserDTO
                     return safeUser;
@@ -105,17 +105,17 @@ export class UserRepository{
      * @param user Um objeto UpdateUserPasswordDTO com a senha nova a ser atualizada e o método de indentificação do usuário.
      * @returns Um objeto SafeUserDTO caso a operação tenha sido realizada com sucesso, ou null caso não.
      */
-    public static async updatePassword(user:UpdateUserPasswordDTO):Promise<SafeUserDTO|null>{
+    public async updatePassword(user:UpdateUserPasswordDTO):Promise<SafeUserDTO|null>{
         const password = user.password;
         const toConsult = user.email || user.ra;
         const idMethod = user.ra ? "ra" : "email";
         await using db = await DBConnection.connect();
         try{
-            const result:UpsertResult = await db.query(
-                `UPDATE users SET password = ? WHERE ${idMethod} = ?;`,
+            const result = await db.query(
+                `UPDATE users SET password = $1 WHERE ${idMethod} = $2;`,
                 [password,toConsult]
             );
-            if(result.affectedRows > 0){
+            if(result.rowCount){
                 if(user.email){
                     const safeUser:SafeUserDTO = await this.searchByEmail(user.email) as SafeUserDTO;
                     return safeUser;
@@ -136,17 +136,17 @@ export class UserRepository{
      * @param user Um objeto UpdateUserEmailDTO com o email a ser atualizado e o método de identificação do Usuário.
      * @returns Um objeto SafeUserDTO com as novas informações atualizadas.
      */
-    public static async updateEmail(user:UpdateUserEmailDTO):Promise<SafeUserDTO|null>{
+    public async updateEmail(user:UpdateUserEmailDTO):Promise<SafeUserDTO|null>{
         const newEmail = user.newEmail;
         const toConsult = user.oldEmail || user.ra;
         const idMethod = user.ra ? "ra" : "email";
         await using db = await DBConnection.connect();
         try{
-            const result:UpsertResult = await db.query(
-                `UPDATE users SET email = ? WHERE ${idMethod} = ?;`,
+            const result = await db.query(
+                `UPDATE users SET email = $1 WHERE ${idMethod} = $2;`,
                 [newEmail,toConsult]
             );
-            if(result.affectedRows > 0){
+            if(result.rowCount){
                 if(user.oldEmail){
                     const safeUser:SafeUserDTO = await this.searchByEmail(user.newEmail) as SafeUserDTO;
                     return safeUser;
@@ -167,16 +167,16 @@ export class UserRepository{
      * @param user Um objeto DeleteUserDTO com as informações para buscar o usuário a ser deletado.
      * @returns Um boolean true caso tenha sido possível, um false caso não tenha encontrado o usuário.
      */
-    public static async delete(user:DeleteUserDTO):Promise<boolean>{
+    public async delete(user:DeleteUserDTO):Promise<boolean>{
         const toDelete = user.ra || user.email;
         const idMethod = user.ra? "ra" : "email";
         await using db = await DBConnection.connect();
         try{
-            const result:UpsertResult = await db.query(
-                `DELETE FROM users WHERE ${idMethod} = ?;`,
+            const result = await db.query(
+                `DELETE FROM users WHERE ${idMethod} = $1;`,
                 [toDelete]
             );
-            if(result.affectedRows>0){
+            if(result.rowCount){
                 return true;
             }
             return false;
