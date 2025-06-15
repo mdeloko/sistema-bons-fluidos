@@ -1,34 +1,28 @@
 // src/components/AppNavigation.tsx
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom'; // <-- IMPORTE useLocation
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import styles from './Navbar.module.css'; // Importe o CSS Module para os estilos da Navbar
+import styles from './Navbar.module.css'; // Importe o CSS Module da Navbar
 
 const AppNavigation: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const location = useLocation(); // <-- OBTÉM O OBJETO DE LOCALIZAÇÃO ATUAL
+  const { isAuthenticated, logout, userRole } = useAuth(); // <-- ATUALIZADO: Pega userRole
+  const location = useLocation();
 
-  // Função auxiliar para verificar se o link atual é o ativo
   const getLinkClassName = (path: string) => {
-    // Retorna a classe 'navLink' padrão e, se for o caminho ativo, adiciona 'activeLink'
     return `${styles.navLink} ${location.pathname === path ? styles.activeLink : ''}`;
   };
 
   return (
     <nav className={styles.navbar}>
-      {/* SEÇÃO DO TÍTULO / LOGO DO SISTEMA */}
-      <div className={styles.navbarBrand}> {/* <-- NOVA DIV PARA O TÍTULO/LOGO */}
-        <Link to="/" className={styles.brandLink}> {/* Link para a home */}
+      <div className={styles.navbarBrand}>
+        <Link to="/" className={styles.brandLink}>
           Bons Fluidos
         </Link>
       </div>
-
-      {/* Links de navegação */}
       <ul className={styles.navList}>
         <li className={styles.navItem}>
-          <Link to="/" className={getLinkClassName('/')}>Home</Link> {/* <-- USANDO getLinkClassName */}
+          <Link to="/" className={getLinkClassName('/')}>Home</Link>
         </li>
-
         {!isAuthenticated && (
           <>
             <li className={styles.navItem}>
@@ -39,7 +33,6 @@ const AppNavigation: React.FC = () => {
             </li>
           </>
         )}
-
         {isAuthenticated && (
           <>
             <li className={styles.navItem}>
@@ -54,11 +47,15 @@ const AppNavigation: React.FC = () => {
             <li className={styles.navItem}>
               <Link to="/movements" className={getLinkClassName('/movements')}>Histórico Mov.</Link>
             </li>
+            {/* --- NOVO LINK: Gerenciamento de Usuários (APENAS SE ADMIN) --- */}
+            {userRole === 'admin' && ( // <-- SÓ MOSTRA SE userRole FOR 'admin'
+              <li className={styles.navItem}>
+                <Link to="/users" className={getLinkClassName('/users')}>Gerenciar Usuários</Link>
+              </li>
+            )}
           </>
         )}
       </ul>
-
-      {/* Botão de Sair */}
       {isAuthenticated && (
         <button onClick={logout} className={styles.logoutButton}>Sair</button>
       )}

@@ -1,0 +1,187 @@
+/* src/styles/UserManagementPage.module.css */
+.container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  margin: 40px auto;
+  max-width: 1000px; /* Mais largo para a tabela de usuários */
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #374151;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #1e293b;
+  font-size: 2.2em;
+  font-weight: 500;
+}
+
+.actionErrorMessage {
+  color: #e74c3c;
+  background-color: #ffebeb;
+  border: 1px solid #e74c3c;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+}
+
+.noDataMessage {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #555;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto; /* Permite rolar horizontalmente em telas pequenas */
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.userTable th,
+.userTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.userTable th {
+  background-color: #f9fafb;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.userTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.userTable tbody tr:hover {
+  background-color: #f0f4f8;
+}
+
+.roleAdmin {
+  background-color: #e0f2f7; /* Azul claro */
+  color: #2196f3; /* Azul */
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.roleUser {
+  background-color: #fff3e0; /* Laranja claro */
+  color: #ff9800; /* Laranja */
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.actionsCell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.promoteButton, .demoteButton, .deleteButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.promoteButton {
+  background-color: #4CAF50; /* Verde */
+  color: white;
+}
+.promoteButton:hover {
+  background-color: #43A047;
+  transform: translateY(-2px);
+}
+
+.demoteButton {
+  background-color: #FFC107; /* Amarelo */
+  color: #333;
+}
+.demoteButton:hover {
+  background-color: #FFB300;
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  background-color: #e74c3c; /* Vermelho */
+  color: white;
+}
+.deleteButton:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.promoteButton:disabled, .demoteButton:disabled, .deleteButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Responsividade para a tabela */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+  .userTable, .tableContainer {
+    border: 0;
+  }
+  .userTable thead {
+    display: none;
+  }
+  .userTable tr {
+    margin-bottom: 10px;
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .userTable td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    font-size: 1em;
+  }
+  .userTable td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 15px;
+    font-weight: bold;
+    text-align: left;
+    color: #4b5563;
+  }
+  .actionsCell {
+    text-align: center;
+    padding-top: 15px;
+  }
+  .promoteButton, .demoteButton, .deleteButton {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}

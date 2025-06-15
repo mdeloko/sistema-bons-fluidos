@@ -15,6 +15,7 @@ import NewMovementPage from './pages/NewMovementPage';
 import CreateProductPage from './pages/CreateProductPage.tsx';
 import EditProductPage from './pages/EditProductPage.tsx';
 import MovementsHistoryPage from './pages/MovementsHistoryPage.tsx';
+import UserManagementPage from './pages/UserManagementPage.tsx';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/movements/new" element={<NewMovementPage />} />
               <Route path="/movements" element={<MovementsHistoryPage />} /> 
               <Route path="/products/edit/:id" element={<EditProductPage />} />
+              <Route path="/users" element={<UserManagementPage />} />
             </Route>
           </Routes>
         </div>
