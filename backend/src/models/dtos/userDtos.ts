@@ -6,20 +6,22 @@ export type CreateUserDTO = {
 	isAdmin:boolean;
 };
 export type UpdateUserNameDTO = {
-	ra?: string;
-	email?: string;
+	ra: string;
 	name: string;
 };
 export type UpdateUserPasswordDTO = {
-	ra?: string;
-	email?: string;
+	ra: string;
 	password: string;
 };
 export type UpdateUserEmailDTO = {
-	ra?: string;
-	oldEmail?: string;
+	ra: string;
 	newEmail: string;
 };
+
+export type UpdateUserRaDTO = {
+	email: string;
+	newRa:string;
+}
 
 export type DeleteUserDTO = {
 	ra?: string;
@@ -39,4 +41,17 @@ export type FullUserDTO = {
 	email: string;
 	password: string;
 	isAdmin:boolean;
+};
+
+export type SearchUserEMailDTO = {
+	email:string
+}
+
+export type SearchUserRaDTO = {
+	ra: string;
+};
+
+export type GeneralUserUpdateDTO = {
+	field: string;
+	valueToUpdateTo: string;
 };
