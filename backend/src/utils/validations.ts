@@ -1,3 +1,8 @@
+import jwt from "jsonwebtoken";
+import { Response, Request } from "express";
+import {EHttpStatusCode as StatusCode} from "../@types/httpStatusCode.js";
+
+export const SECRET = process.env.JWT_SECRET || "segredo!";
 /**
 	 * Valida uma senha.
 	 * @param pw String de Senha a ser testada
@@ -18,5 +23,26 @@ export function validateEmail(email:string):boolean{
 	);
     return emailRegex.test(email);
 
+}
+
+export function verifyJWT(req:Request,res:Response,next:Function){
+    const token = req.headers['authorization'];
+    if(!token){
+        res.status(StatusCode.BAD_REQUEST).end();
+        return; 
+    }
+    try{
+        const decoded = jwt.verify(token,SECRET);
+        //@ts-ignore
+        req.userId = decoded.userId; 
+        next();
+    }catch(err){
+        if(err instanceof jwt.JsonWebTokenError && err.name === "TokenExpiredError"){
+            res.status(StatusCode.UNAUTHORIZED).json({message:"Token expirado, faça login novamente!",status:StatusCode.UNAUTHORIZED});
+            return;
+        }
+        res.status(StatusCode.UNAUTHORIZED).json({message:"Token inválido.",status:StatusCode.BAD_REQUEST});
+        return; 
+    }
 }
 
