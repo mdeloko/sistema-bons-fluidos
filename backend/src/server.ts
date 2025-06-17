@@ -1,7 +1,7 @@
 import express from "express";
 import {EHttpStatusCode as httpResponses} from "./@types/httpStatusCode.js";
-import {router as productsRouter} from "./routes/products.js";
-import { router as usersRouter } from "./routes/users.js";
+import {router as productsRouter} from "./routes/productsRoutes.js";
+import { router as usersRouter } from "./routes/usersRoutes.js";
 
 const PORT = process.env.PORT || 3000;
 const server = express();
