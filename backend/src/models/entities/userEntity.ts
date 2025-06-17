@@ -1,6 +1,7 @@
 import { validatePassword } from "../../utils/validations.js";
 
 type UserProps = {
+	id?:number;
 	name: string;
 	email: string;
 	ra: string;
@@ -16,8 +17,11 @@ export class User {
 		ra: string,
 		password: string,
 		isAdmin: boolean,
+		id?:number
 	) {
-		if (validatePassword(password))
+		if (id && validatePassword(password))
+			return new User({ name, email, ra, password, isAdmin, id });
+		else if(validatePassword(password))
 			return new User({ name, email, ra, password, isAdmin });
 		throw new Error("Erro ao criar Entidade Usuário, senha fraca.");
 	}
@@ -35,6 +39,9 @@ export class User {
 	}
 	public get email(){
 		return this.props.email;
+	}
+	public get id(){
+		return this.props.id;
 	}
 	/**
 	 * Valida uma senha e atualiza caso passe.

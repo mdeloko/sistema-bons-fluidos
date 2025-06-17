@@ -36,6 +36,7 @@ export type SafeUserDTO = {
 }
 
 export type FullUserDTO = {
+	id:number;
 	name: string;
 	ra: string;
 	email: string;
@@ -55,3 +56,12 @@ export type GeneralUserUpdateDTO = {
 	field: string;
 	valueToUpdateTo: string;
 };
+
+export type LoginDTO =  {
+	ra:string;
+	password:string;
+}
+
+export type isAdmin = {
+	userId:number
+}

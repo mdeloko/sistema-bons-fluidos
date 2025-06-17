@@ -1,6 +1,9 @@
-import { validatePassword } from "../../utils/validations.js";
+import { validatePassword,SECRET } from "../../utils/validations.js";
 import {
 	CreateUserDTO,
+	FullUserDTO,
+	isAdmin,
+	LoginDTO,
 	SafeUserDTO,
 	SearchUserEMailDTO,
 	SearchUserRaDTO,
@@ -11,7 +14,8 @@ import {
 } from "../dtos/userDtos.js";
 import { User } from "../entities/userEntity.js";
 import { UserRepository } from "../repositories/userRepository.js";
-import { hash } from "bcrypt";
+import { hash,compare} from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export class UserService {
 	constructor(private repository: UserRepository) {}
@@ -145,6 +149,49 @@ export class UserService {
 				ra: user.ra,
 			};
 			return userDto;
+		}
+		return null;
+	}
+
+	public async manageLogin(userToSearch:LoginDTO){
+		const fullUser = await this.repository.searchByRa(userToSearch.ra);
+		if(fullUser){
+			const userDto: FullUserDTO = {
+				id:fullUser.id as number,
+				name:fullUser.name,
+				email: fullUser.email,
+				password:fullUser.password,
+				isAdmin:fullUser.isAdmin,
+				ra:fullUser.ra
+			}
+			if(await compare(userToSearch.password,fullUser.password))
+				return jwt.sign({userId:userDto.id},SECRET,{expiresIn:"4h"})
+			else
+				return null
+		}
+		return undefined;
+	}
+
+	public async listAllUsers(adminUser:isAdmin){
+		const user = await this.repository.searchById(adminUser.userId);
+		if(user?.isAdmin){
+			const users = await this.repository.listUsers();
+			return users;
+		}
+		return [];
+	}
+
+	public async deleteUser(userToDelete: { ra?: string; email?: string }) {
+		if (userToDelete.ra) {
+			const user = await this.repository.searchByRa(userToDelete.ra);
+			if (user) {
+				return await this.repository.delete(user);
+			}
+		} else if (userToDelete.email) {
+			const user = await this.repository.searchByEmail(userToDelete.email);
+			if (user) {
+				return await this.repository.delete(user);
+			}
 		}
 		return null;
 	}

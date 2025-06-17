@@ -37,8 +37,8 @@ export class UserRepository{
         try{
             const rows = await db.query("SELECT * FROM usuarios WHERE ra = $1 ;",[ra]);
             if(rows && rows.rowCount){
-                const {nome,ra,email, is_admin, senha_hash} = rows.rows[0] as unknown as {nome:string,ra:string,email:string,is_admin:boolean,senha_hash:string};
-                const user = User.create(nome, ra, email, senha_hash, is_admin);
+                const {id,nome,ra,email, is_admin, senha_hash} = rows.rows[0] as unknown as {id:number,nome:string,ra:string,email:string,is_admin:boolean,senha_hash:string};
+                const user = User.create(nome, email, ra, senha_hash, is_admin,id);
                 return user;
             }
             return null;
@@ -59,8 +59,8 @@ export class UserRepository{
         try{
             const rows = await db.query("SELECT * FROM usuarios WHERE email = $1 ;",[email]);
             if(rows.rowCount && rows.rowCount>0){
-                const {nome,ra,email, is_admin, senha_hash} = rows.rows[0] as unknown as {nome:string,ra:string,email:string,is_admin:boolean,senha_hash:string};
-                const safeUser = User.create(nome, email, ra, senha_hash, is_admin);
+                const {id,nome,ra,email, is_admin, senha_hash} = rows.rows[0] as unknown as {id:number,nome:string,ra:string,email:string,is_admin:boolean,senha_hash:string};
+                const safeUser = User.create(nome, email, ra, senha_hash, is_admin,id);
                 return safeUser;
             }
             return null;
@@ -68,6 +68,19 @@ export class UserRepository{
             if(error instanceof DatabaseError){
                 throw new Error("Erro: "+error.message);
             }
+            throw new Error("Erro: "+error);
+        }
+    }
+    public async searchById(id:number){
+        await using db= await DBConnection.connect();
+        try{
+            const rows = await db.query("SELECT * FROM usuarios WHERE id = $1 ;",[id]);
+            if(rows.rowCount && rows.rowCount>0){
+                const {id,nome,ra,email, is_admin, senha_hash} = rows.rows[0] as unknown as {id:number,nome:string,ra:string,email:string,is_admin:boolean,senha_hash:string};
+                const user = User.create(nome, email, ra, senha_hash, is_admin,id);
+                return user;
+            }
+        }catch(error){
             throw new Error("Erro: "+error);
         }
     }
@@ -157,15 +170,14 @@ export class UserRepository{
      * @param user Um objeto DeleteUserDTO com as informações para buscar o usuário a ser deletado.
      * @returns Um boolean true caso tenha sido possível, um false caso não tenha encontrado o usuário.
      */
-    public async delete(user:DeleteUserDTO):Promise<boolean>{
-        const toDelete = user.ra || user.email;
-        const idMethod = user.ra? "ra" : "email";
+    public async delete(user:User):Promise<boolean>{
         await using db = await DBConnection.connect();
         try{
             const result = await db.query(
-                `DELETE FROM users WHERE ${idMethod} = $1;`,
-                [toDelete]
+                `DELETE FROM usuarios WHERE ra = $1 ;`,
+                [user.ra]
             );
+            console.log(result)
             if(result.rowCount){
                 return true;
             }
@@ -174,5 +186,14 @@ export class UserRepository{
             console.error("Erro:"+error);
             throw new Error("Não foi possível deletar usuário.")
         }
+    }
+
+    public async listUsers(){
+        await using db = await DBConnection.connect();
+        const rows = await db.query("SELECT id,ra,nome,email,is_admin FROM usuarios;")
+        if (rows.rowCount && rows.rowCount > 0) {
+            return rows.rows;
+        }
+        return [];
     }
 }
