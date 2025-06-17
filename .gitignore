@@ -137,4 +137,6 @@ dist
 .pnp.*
 
 #Database
-pgsql/
+backend/pgsql/pgadmin-data
+backend/pgsql/pgdata
+backend/pgsql/docker.env
