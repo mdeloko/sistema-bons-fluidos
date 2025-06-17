@@ -68,20 +68,11 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
     "isAdmin":false,
 }
 ```
->PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
-```json
-{
-    "field":"name|ra|email|password",
-    "valueToUpdateTo":"str",
-    //Escolha um dos 2 abaixo para enviar
-    "email":"str",
-    "ra":"str"
-}
-```
+
 >DELETE - Envie com o corpo listado abaixo, e caso a exclusão no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
 ```json
 {
-    "valueToSearch":"ar | email"
+    "valueToSearch":"ra | email"
 }
 ```
 
@@ -92,12 +83,41 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
     "email":"example@mail.com"
 }
 ```
-
-- `/users/ar/${ar}`
+>PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).  
+**Obs.: Use essa rota apenas para atualizar o R.A.**
+```json
+{
+    "field":"ra",
+    "valueToUpdateTo":"string",
+}
+```
+- `/users/ra/${ra}`
 >GET - Envie com o corpo listado abaixo, e caso a consulta no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
 ```json
 {
-    "ar":"7654321"
+    "ra":"7654321"
+}
+```
+>PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).  
+**Obs.: Use esta rota para atualização de tudo, menos R.A.**
+```json
+{
+    "field":"name|ra|email|password",
+    "valueToUpdateTo":"str",
+    "valueToSearch":"str",
+}
+```
+
+> Ao usar as rotas de GET e PUT terão o retorno parecido com isto:
+```typescript
+    type Response = {
+    name: string;
+    ra: string;
+    email: string;
+	isAdmin:boolean;
+    status:number;
+    message?:string;
+    error?:string;
 }
 ```
 
@@ -114,7 +134,7 @@ Aqui ficarão listadas exemplos das implementações das funções da aplicaçã
 async function example(){
     await using db = await DBConnection.connect();
 
-    const rows = db.query("USE bons_fluidos")
+    const rows = await db.query("USE bons_fluidos");
 }
 ```
 > Aqui acima está detalhado um modelo básico de função de query que será replicado nos Controllers do projeto, esta faz o uso da nova _keyword_ `using` do Node v24, que automatiza o processo de liberação de memória de um objeto assim que um bloco de código acaba, evitando vazamentos de memória e possibilitando a automatização do fechamento da conexão com o MariaDB em apenas um lugar no código, o que melhora códigos _boiler plates_ e ajuda o desenvolvedor a não esquecer mais as conexões de banco abertas.
