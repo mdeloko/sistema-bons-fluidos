@@ -12,10 +12,12 @@ const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
 // Rotas de Produto
-router.post("/", productController.createProduct);
-router.get("/", productController.getAllProducts);
-router.get("/id/:id", productController.getProductById);
-router.get("/name/:name", productController.getProductByName);
-router.get("/origin/:origin", productController.getProductsByOrigin);
-router.put("/:id", productController.updateProduct); // Atualização por ID
-router.delete("/:id", productController.deleteProduct); // Deleção por ID
+// Usamos arrow functions para garantir que o 'this' dentro dos métodos do controller
+// aponte para a instância correta de productController.
+router.post("/", (req, res) => productController.createProduct(req, res));
+router.get("/", (req, res) => productController.getAllProducts(req, res));
+router.get("/id/:id", (req, res) => productController.getProductById(req, res));
+router.get("/name/:name", (req, res) => productController.getProductByName(req, res));
+router.get("/origin/:origin", (req, res) => productController.getProductsByOrigin(req, res));
+router.put("/:id", (req, res) => productController.updateProduct(req, res));
+router.delete("/:id", (req, res) => productController.deleteProduct(req, res));
