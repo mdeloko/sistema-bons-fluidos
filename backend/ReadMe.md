@@ -1,21 +1,31 @@
 # Documentação Backend
 
 ## Índice
-1. [Scripts NPM](#scripts-npm)
+1. [Scripts](#scripts)
 2. [Versões Utilizadas](#versões-utilizadas)
 3. [Variáveis de Ambiente](#variáveis-de-ambiente)
 4. [Exemplos](#exemplos)
-    1. [Endpoints](#endpoints)
+    1. [Endpoints](#endpoints)  
+        a.[Users](#users)  
+        b.[Products](#products)  
+        c.[Transactions](#transactions)  
     2. [Funções](#funções)
 ---
 [Voltar ao Topo](#documentação-backend)
 
-### Scripts NPM
+### Scripts
+#### NPM
 Esses foram os scripts criados para o desenvolvimento:
 - `npm run tsc:w` - Esse script por baixo dos panos inicia o transpilador do TypeScript em modo vigia para que detecte mudança nos códigos e "recompile" o código diferente para JavaScript, dentro da pasta `./dist`;
 - `npm run dev` - Esse script inicia o Node.JS em modo vigia, que detecta quaisquer alterações no código JavaScript e reinicia o runtime do Node para recarregar essas alterações, lembrando que há a necessidade de um aquivo `.env.dev` aqui na pasta raíz que seguirá o modelo proposto em [Variáveis de Ambiente](#variáveis-de-ambiente).;
 - `npm run build` - Ao término do desenvolvimento esse script foi utilizado para o último build do código, tamém para a pasta `./dist`;
 - `npm start` - **Após o build** este é o comando a ser executado, onde ele apenas inicia o servidor Node.JS, lembrando que aqui também há a necessidade de um aquivo `.env` na pasta raíz que também seguirá o modelo proposto em [Variáveis de Ambiente](#variáveis-de-ambiente).
+
+[Voltar ao Índice](#índice)
+#### Docker
+O script [docker compose](./pgsql/pg-compose.yaml) utilizado para desenvolvimento se encontra dentro de `backend/pgsql`.  
+Para utilizá-lo entre em `backend/postgresql` via terminal e digite `docker compose -f ./pg-compose.yml up -d --build`.  
+Ao terminar os testes/desenvolvimento, ainda dentro do diretório, utilizar `docker compose -f ./pg-compose.yml down` para finalizar o containers. Ou `docker compose -f ./pg-compose.yml down -v` com a flag `-v` para desassociar os containers dos seus respectivos volumes e poder apagar as pastas associadas.
 
 [Voltar ao Índice](#índice)
 
@@ -25,6 +35,9 @@ Nesta seção constam as versões das tecnologias utilizadas na construção des
 - Node.JS: v24.0.2
 - Express: v5.1
 - TypeScript: v5.8.3
+- bcrypt: v6.0.0
+- JsonWebToken: v9.0.2
+- pg: v8.16.0
 
 [Voltar ao Índice](#índice)
 
@@ -37,6 +50,7 @@ DB_USER=
 DB_PASS=
 DB_NAME=
 DB_PORT=
+JWT_SECRET=
 ```
 - `PORT` - Número da porta para o servidor backend abrir;
 - `DB_HOST` - Endereço DNS/IP do banco MariaDB;
@@ -44,6 +58,19 @@ DB_PORT=
 - `DB_PASS` - Senha desse usuário de acesso;
 - `DB_NAME` - Nome da tabela que será usada na aplicação;
 - `DB_PORT` - Porta do banco de dados a ser utilizado.
+- `JWT_SECRET` - Secret usado na criação de tokens JWT.
+
+Aqui está detalhado o formato do aqruivo docker.env necessário de ser criado em `/backend/pgsql`:
+```bash
+POSTGRES_PASSWORD=
+POSTGRES_USER=
+PGADMIN_DEFAULT_EMAIL=
+PGADMIN_DEFAULT_PASSWORD=
+```
+- `POSTGRES_PASSWORD` - Senha do seu banco PostgreSQL que será criado.
+- `POSTGRES_USER` - Usuário o seu banco PostgreSQL que será criado.
+- `PGADMIN_DEFAULT_EMAIL` - Email utilizado para login na ferramenta PGAdmin4 criada em conjunto ao banco.
+- `PGADMIN_DEFAULT_PASSWORD` - Senha utilizado para login na ferramenta PGAdmin4 criada em conjunto ao banco.
 
 [Voltar ao Índice](#índice)
 
@@ -54,9 +81,62 @@ Aqui estará detalhado a forma de utilização de cada endpoint e funções com 
 #### Endpoints
 Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 
-- `/users`:
->GET - Retornará erro de requisição (400).
+##### Users
+- `/users/login`:
+>POST - Envie o corpo abaixo e poderá obter algum retorno listado.
+```json
+//Enviar
+{
+    "ra":"",
+    "password":""
+}
+//Receberá
+//Sucesso (200)
+{
+    "auth":true,
+    "token":""
+}
+// Faltando argumentos (400)
+{
+    "auth":false,
+    "message":"Faltando argumentos",
+    "status":400
+}
+// R.A. não encontrado (404)
+{
+    "auth":false,
+    "message": "R.A. não encontrado.",
+    "status": 404,
+}
+// Senha ou R.A. Errados (401)
+{
+    "auth":false,
+    "message":"Senha ou R.A. errados.",
+    "status":401
+}
+```
 
+- `/users`:
+>GET - Retornará uma lista de usuários se o requisitante for administrador, use o seguinte header de requisição:
+```json
+//Header
+{
+    "Authorization":"seu_JWT_admin"
+}
+
+//Receberá
+//Sucesso (200)
+[
+    {
+        //Lista de Usuários, sem os hashes de suas senhas.
+    }
+]
+// Caso não for administrador (401)
+{
+    "message": "Acesso negado.",
+    "status": 401,
+}
+```
 >POST - Envie com o corpo listado abaixo, e caso a inserção no banco funcionar, retornará Criado (201) ou Erro interno do servidor (500).
 
 ```json
@@ -69,35 +149,36 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 }
 ```
 
->DELETE - Envie com o corpo listado abaixo, e caso a exclusão no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
+>DELETE - Envie com um dos parâmetros abaixo, e caso a exclusão no banco funcionar, retornará OK (200) ou Não encontrado (404).
 ```json
+//Header
 {
-    "valueToSearch":"ra | email"
+    "Authorization":"seu_JWT_admin"
+}
+```
+```ts
+type Request = {
+    ra?:string,
+    email?:string
 }
 ```
 
 - `/users/email/${email}`
->GET - Envie com o corpo listado abaixo, e caso a consulta no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
-```json
-{
-    "email":"example@mail.com"
-}
-```
->PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).  
+>PUT - Envie com o corpo listado abaixo.
 **Obs.: Use essa rota apenas para atualizar o R.A.**
 ```json
+//Header
 {
-    "field":"ra",
+    "Authorization":"seu_JWT"
+}
+//Body
+{
+    "field":"name|ra|email|password",
     "valueToUpdateTo":"string",
 }
 ```
+
 - `/users/ra/${ra}`
->GET - Envie com o corpo listado abaixo, e caso a consulta no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).
-```json
-{
-    "ra":"7654321"
-}
-```
 >PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).  
 **Obs.: Use esta rota para atualização de tudo, menos R.A.**
 ```json
@@ -108,7 +189,7 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 }
 ```
 
-> Ao usar as rotas de GET e PUT terão o retorno parecido com isto:
+> Ao usar a rota PUT terão o retorno parecido com isto:
 ```typescript
     type Response = {
     name: string;
@@ -122,6 +203,13 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 ```
 
 Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/deletado/consultado.
+
+[Voltar ao Índice](#índice)
+
+##### Products
+
+[Voltar ao Índice](#índice)
+##### Transactions
 
 [Voltar ao Índice](#índice)
 
