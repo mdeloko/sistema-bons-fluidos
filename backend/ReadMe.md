@@ -94,7 +94,8 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 //Sucesso (200)
 {
     "auth":true,
-    "token":""
+    "token":"",
+    "role":"admin|user"
 }
 // Faltando argumentos (400)
 {

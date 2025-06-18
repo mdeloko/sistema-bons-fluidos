@@ -119,22 +119,24 @@ export class UserController{
             res.status(StatusCode.BAD_REQUEST).json({auth:false,message:"Faltando argumentos",status:StatusCode.BAD_REQUEST});
             return
         }
-        const token = await this.userService.manageLogin({ra,password})
-        if(token && typeof token == "string"){
-            //@ts-ignore
-            res.status(StatusCode.OK).json({auth:true,...token})
-            return
-        }else if(typeof token ==="undefined"){
-            res.status(StatusCode.NOT_FOUND).json({
-                auth:false,
+        const loginData = await this.userService.manageLogin({ra,password});
+        if (typeof loginData !== null && typeof loginData !== "undefined") {
+			res.status(StatusCode.OK).json({ auth: true,...loginData }).end();
+			return;
+		} else if (typeof loginData === "undefined") {
+			res.status(StatusCode.NOT_FOUND).json({
+				auth: false,
 				message: "R.A. não encontrado.",
 				status: StatusCode.NOT_FOUND,
 			});
 			return;
-        }
-        else if(typeof token ==="object" && token === null){
-            res.status(StatusCode.UNAUTHORIZED).json({auth:false,message:"Senha ou R.A. errados.",status:StatusCode.UNAUTHORIZED})
-            return
-        }
+		} else if (typeof loginData === "object" && loginData === null) {
+			res.status(StatusCode.UNAUTHORIZED).json({
+				auth: false,
+				message: "Senha ou R.A. errados.",
+				status: StatusCode.UNAUTHORIZED,
+			});
+			return;
+		}
     }
 }

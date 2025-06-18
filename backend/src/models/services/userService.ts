@@ -153,31 +153,35 @@ export class UserService {
 		return null;
 	}
 
-	public async manageLogin(userToSearch:LoginDTO){
+	public async manageLogin(
+		userToSearch: LoginDTO,
+	): Promise<{ role: string; token: string } | null | undefined> {
 		const fullUser = await this.repository.searchByRa(userToSearch.ra);
-		if(fullUser){
+		if (fullUser) {
 			const userDto: FullUserDTO = {
-				id:fullUser.id as number,
-				name:fullUser.name,
+				id: fullUser.id as number,
+				name: fullUser.name,
 				email: fullUser.email,
-				password:fullUser.password,
-				isAdmin:fullUser.isAdmin,
-				ra:fullUser.ra
-			}
-			if(await compare(userToSearch.password,fullUser.password))
+				password: fullUser.password,
+				isAdmin: fullUser.isAdmin,
+				ra: fullUser.ra,
+			};
+			if (await compare(userToSearch.password, fullUser.password)) {
+				const role = userDto.isAdmin ? "admin" : "user";
 				return {
-					role:userDto.isAdmin?"admin":"user",
-					token:jwt.sign({userId:userDto.id},SECRET,{expiresIn:"4h"})
-				}
-			else
-				return null
+					role,
+					token: jwt.sign({ userId: userDto.id }, SECRET, {
+						expiresIn: "4h",
+					}),
+				};
+			} else return null;
 		}
 		return undefined;
 	}
 
-	public async listAllUsers(adminUser:isAdmin){
+	public async listAllUsers(adminUser: isAdmin) {
 		const user = await this.repository.searchById(adminUser.userId);
-		if(user?.isAdmin){
+		if (user?.isAdmin) {
 			const users = await this.repository.listUsers();
 			return users;
 		}
@@ -191,7 +195,9 @@ export class UserService {
 				return await this.repository.delete(user);
 			}
 		} else if (userToDelete.email) {
-			const user = await this.repository.searchByEmail(userToDelete.email);
+			const user = await this.repository.searchByEmail(
+				userToDelete.email,
+			);
 			if (user) {
 				return await this.repository.delete(user);
 			}
