@@ -3,7 +3,7 @@
 import axios from 'axios'; // <-- AGORA IMPORTAMOS O AXIOS DE VERDADE
 
 
-const API_URL = 'http://localhost:5000/api/auth'; // Ajuste esta porta/URL conforme o seu backend
+const API_URL = 'http://localhost:3000/users'; // Ajuste esta porta/URL conforme o seu backend
 
 
 // TODO: Verificar se o campo da senha no backend é 'password' ou 'senha', etc.
@@ -11,7 +11,8 @@ export interface RegisterData {
   name: string;
   email: string;
   ra: string;
-  password: string; 
+  password: string;
+  isAdmin: boolean;
 }
 
 export interface LoginCredentials {
@@ -39,7 +40,7 @@ export interface LoginResponse {
  */
 export const registerUser = async (data: RegisterData): Promise<any> => {
   try {
-    const response = await axios.post<any>(`${API_URL}/register`, data);
+    const response = await axios.post<any>(`${API_URL}`, data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

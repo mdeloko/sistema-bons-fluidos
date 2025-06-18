@@ -74,7 +74,8 @@ const RegistroPage: React.FC = () => {
                 name: formData.name, // <--- Incluído o campo 'name'
                 email: formData.email,
                 ra: formData.ra,
-                password: formData.password, // <--- Agora é 'password', consistente com RegisterData
+                password: formData.password,
+                isAdmin: false, // <--- Agora é 'password', consistente com RegisterData
             };
 
             // Chama a função de registro do serviço de autenticação

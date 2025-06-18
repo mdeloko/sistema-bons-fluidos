@@ -1,7 +1,7 @@
 // src/api.ts
 import axios from 'axios'; 
 
-const API_BASE_URL = 'http://localhost:5000/api'; // Ajuste esta porta/URL conforme o seu backend
+const API_BASE_URL = 'http://localhost:3000/users'; // Ajuste esta porta/URL conforme o seu backend
 
 // Cria uma instância do Axios com a URL base e cabeçalhos padrão.
 // Todas as requisições feitas com esta instância 'api' terão esses padrões.
