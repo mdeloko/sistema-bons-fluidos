@@ -165,7 +165,10 @@ export class UserService {
 				ra:fullUser.ra
 			}
 			if(await compare(userToSearch.password,fullUser.password))
-				return jwt.sign({userId:userDto.id},SECRET,{expiresIn:"4h"})
+				return {
+					role:userDto.isAdmin?"admin":"user",
+					token:jwt.sign({userId:userDto.id},SECRET,{expiresIn:"4h"})
+				}
 			else
 				return null
 		}

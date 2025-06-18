@@ -120,8 +120,9 @@ export class UserController{
             return
         }
         const token = await this.userService.manageLogin({ra,password})
-        if(typeof token == "string"){
-            res.status(StatusCode.OK).json({auth:true,token})
+        if(token && typeof token == "string"){
+            //@ts-ignore
+            res.status(StatusCode.OK).json({auth:true,...token})
             return
         }else if(typeof token ==="undefined"){
             res.status(StatusCode.NOT_FOUND).json({
