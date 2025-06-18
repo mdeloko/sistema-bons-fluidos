@@ -22,12 +22,12 @@ export interface LoginCredentials {
 
 export interface LoginResponse {
   token: string;
+  role: 'admin' | 'user'; // TODO Certifique-se de que o backend retorna a role
   user: {
     id: string; // TODO Se o backend retornar um ID (geralmente numérico ou UUID)
     ra: string;
     name: string;
     email: string;
-    role: 'admin' | 'user'; // TODO Certifique-se de que o backend retorna a role
     // Adicione outras propriedades do usuário que o backend retornar
   };
 }

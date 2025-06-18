@@ -21,7 +21,8 @@ const LoginPage: React.FC = () => {
     try {
       const credentials: LoginCredentials = { ra, password };
       const response: LoginResponse = await loginUser(credentials); // <-- Tipagem para response
-      login(response.token, response.user.role); // <-- ATUALIZADO: Passa token E role
+      console.log(response);
+      login(response.token, response.role); // <-- ATUALIZADO: Passa token E role
       // O navigate é chamado dentro do login do AuthContext,
       // então não precisa aqui.
     } catch (err: any) {
