@@ -7,31 +7,38 @@ const database = process.env.DB_NAME
 const port = Number(process.env.DB_PORT) || 5432
 
 const pool = new Pool({
-	host,
-	user,
-	password,
-	database,
+    host,
+    user,
+    password,
+    database,
     port,
-	max: 5,
+    max: 5,
 });
 
-export default class DBConnection{
-    private connection:PoolClient;
+export default class DBConnection {
+    private connection: PoolClient;
 
-    private constructor(connection:PoolClient){
+    private constructor(connection: PoolClient) {
         this.connection = connection;
-        console.log("Aberto conexão com BD.")
+        console.log("Aberto conexão com BD.");
     }
-    async [Symbol.asyncDispose](){
-        if(this.connection){
+
+    // Usando Symbol.asyncDispose para o 'await using'
+    async [Symbol.asyncDispose]() {
+        if (this.connection) {
             await this.connection.release();
             console.log("Conexão devolvida ao Pool.");
         }
     }
-    async query<T=any>(sql:string,params?:any[]){
-        return await this.connection.query<QueryResult<QueryResultRow>>(sql,params);
+
+    // A CORREÇÃO ESTÁ AQUI:
+    // O tipo genérico 'T' agora é passado para o query do PoolClient.
+    // O retorno do seu método 'query' deve ser Promise<QueryResult<T>>
+    async query<T extends QueryResultRow = QueryResultRow>(sql: string, params?: any[]): Promise<QueryResult<T>> {
+        return await this.connection.query<T>(sql, params); // <--- AQUI ESTÁ A MUDANÇA CRÍTICA
     }
-    static async connect():Promise<DBConnection>{
+
+    static async connect(): Promise<DBConnection> {
         const conn = await pool.connect();
         return new DBConnection(conn);
     }
