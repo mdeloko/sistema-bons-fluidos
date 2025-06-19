@@ -2,6 +2,7 @@ import express from "express";
 import {EHttpStatusCode as httpResponses} from "./@types/httpStatusCode.js";
 import {router as productsRouter} from "./routes/productsRoutes.js";
 import { router as usersRouter } from "./routes/usersRoutes.js";
+import {router as movimentRouter} from "./routes/movimentacaoRoutes.js"
 import cors from "cors";
 
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ server.use(
 server.use(express.json());
 server.use("/products",productsRouter);
 server.use("/users",usersRouter);
+server.use("/moviment",movimentRouter);
 
 server.get("/",(req, res) => {
     const body = {

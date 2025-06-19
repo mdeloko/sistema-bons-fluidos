@@ -11,9 +11,9 @@ const userRepo = new UserRepository()
 const userService = new UserService(userRepo);
 const userController = new UserController(userService);
 
-router.get("/",verifyJWT,userController.readAllUsers.bind(userController));
 router.post("/",userController.createUser.bind(userController));
+router.post("/login",userController.login.bind(userController));
+router.get("/",verifyJWT,userController.readAllUsers.bind(userController));
 router.put("/email/:email",verifyJWT,userController.updateUser.bind(userController));
 router.put("/ra/:ra", verifyJWT,userController.updateUser.bind(userController));
 router.delete("/",verifyJWT,userController.deleteUser.bind(userController));
-router.post("/login",userController.login.bind(userController));
