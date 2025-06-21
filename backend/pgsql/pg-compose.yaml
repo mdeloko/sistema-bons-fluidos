@@ -12,6 +12,8 @@ services:
       - POSTGRES_DB=bons_fluidos
       - PGDATA=/var/lib/postgresql/17.5/docker
       - TZ="America/Sao_Paulo"
+      - POSTGRES_USER=bonsfluidos_user
+      - POSTGRES_PASSWORD=PgS3cr3tD3v2025
     ports:
       - 5432:5432
     volumes:
@@ -30,6 +32,21 @@ services:
     - pg-net
     volumes:
       - ./pgadmin-data:/var/lib/pgadmin
+
+  # --- NOVO SERVIÇO PARA O SEU BACKEND ---
+  backend: # <--- Nome do serviço do seu backend
+    container_name: bons-fluidos-backend # Opcional, nome para o contêiner
+    build:
+      context: .. # <--- CONTEXTO: Volta uma pasta para a pasta 'backend'
+      dockerfile: Dockerfile # Procura o Dockerfile que você criou na pasta 'backend'
+    env_file:
+      - ../.env # <--- O .env do seu backend está na pasta 'backend'
+    ports:
+      - "3000:3000" # Mapeia a porta 3000 do host para a porta 3000 do contêiner
+    networks:
+      - pg-net
+    depends_on:
+      - postgres # Garante que o postgres inicie antes do backend
 
 networks:
   pg-net:

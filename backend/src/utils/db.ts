@@ -6,6 +6,17 @@ const password = process.env.DB_PASS
 const database = process.env.DB_NAME
 const port = Number(process.env.DB_PORT) || 5432
 
+// --- COLOQUE OS CONSOLE.LOGS AQUI ---
+console.log("Variáveis de ambiente do Banco de Dados:");
+console.log("DB_HOST:", host);
+console.log("DB_USER:", user);
+// Para segurança, evite imprimir a senha diretamente em logs de produção.
+// Aqui, verificamos se ela existe antes de imprimir uma máscara.
+console.log("DB_PASS:", password ? "****** (senha carregada)" : "Senha não definida/vazia!");
+console.log("DB_NAME:", database);
+console.log("DB_PORT:", port);
+// --- FIM DOS CONSOLE.LOGS ---
+
 const pool = new Pool({
     host,
     user,

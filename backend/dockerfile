@@ -1,0 +1,27 @@
+# Use uma imagem base Node.js
+FROM node:18-alpine
+
+# Defina o diretório de trabalho dentro do contêiner
+WORKDIR /app
+
+# Copie package.json e package-lock.json para instalar as dependências
+COPY package*.json ./
+
+# Instale as dependências do projeto
+RUN npm install
+
+# Copie o restante do código da sua aplicação
+COPY . .
+
+# Compile o TypeScript (se você estiver compilando dentro do contêiner)
+# Se você já compila localmente e copia a pasta dist, pode pular isso
+RUN npm run build # ou npx tsc se for apenas o tsc
+
+# Exponha a porta que sua aplicação escuta (3000)
+EXPOSE 3000
+
+# Comando para iniciar a aplicação
+# Note: Use node --env-file=./.env ou apenas node ./dist/server.js
+# O .env será injetado pelo docker compose, então --env-file pode não ser necessário aqui,
+# mas o comando de start do seu package.json é geralmente mais robusto.
+CMD ["npm", "start"]
