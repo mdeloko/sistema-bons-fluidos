@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from "express";
 import {EHttpStatusCode as httpResponses} from "./@types/httpStatusCode.js";
 import {router as productsRouter} from "./routes/productsRoutes.js";

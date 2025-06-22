@@ -4,7 +4,7 @@
 		"name": "Sistemas-bons-fluidos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "44412593",
-		"_collection_link": "https://gian-2971076.postman.co/workspace/83da9655-d094-414e-8472-6fd7c20bcd0f/collection/44412593-01696214-0dd3-4f5e-a5f1-53c1701edac7?action=share&source=collection_link&creator=44412593"
+		"_collection_link": "https://gian-2971076.postman.co/workspace/Gian's-Workspace~83da9655-d094-414e-8472-6fd7c20bcd0f/collection/44412593-01696214-0dd3-4f5e-a5f1-53c1701edac7?action=share&source=collection_link&creator=44412593"
 	},
 	"item": [
 		{
@@ -29,7 +29,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Maria Silva\",\r\n    \"email\": \"maria.silva@example.com\",\r\n    \"ra\": \"1234567\",\r\n    \"password\": \"SenhaSegura123!\",\r\n    \"isAdmin\": false\r\n}",
+							"raw": "{\r\n    \"name\": \"Maria Silva\",\r\n    \"email\": \"maria.silva@example.com\",\r\n    \"ra\": \"1234567\",\r\n    \"password\": \"Senhasegura123!\",\r\n    \"isAdmin\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -63,12 +63,10 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/users/",
-									"protocol": "http",
+									"raw": "{{URL}}/users/",
 									"host": [
-										"localhost"
+										"{{URL}}"
 									],
-									"port": "3000",
 									"path": [
 										"users",
 										""
@@ -152,6 +150,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ra\": \"admin\",\r\n    \"password\": \"$2b$10$v4CeSB0/WVjO.tSWAy5cIOEODaagusQJER2z6RF1PfBYIqCIn6vji\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/users/login",
 							"host": [
@@ -163,7 +170,227 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Maria",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ra\": \"1234567\",\r\n    \"password\": \"Senhasegura123!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/login",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "181"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b5-TvayXtQMr+4JT4hl0BGJYHBTfMk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 04:21:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"auth\": true,\n    \"role\": \"user\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc1MDU2NjA4NiwiZXhwIjoxNzUwNTgwNDg2fQ.2CYGu1-CB8ZfG3Uz3cAWCZfCskuv-cqObcR3LolUTQ8\"\n}"
+						},
+						{
+							"name": "Joao",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ra\": \"9876543\",\r\n    \"password\": \"AdminSeguro456#\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/login",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "182"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"b6-fRSvyJo23Zg82L/h5+XWl9f+16w\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 04:25:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"auth\": true,\n    \"role\": \"admin\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTc1MDU2NjMwNywiZXhwIjoxNzUwNTgwNzA3fQ.RTkhK9Hg1IXZmFhm5t2IW2dNCPcI4pzxomnJTAaifiY\"\n}"
+						},
+						{
+							"name": "admin local",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ra\": \"admin\",\r\n    \"password\": \"$2b$10$v4CeSB0/WVjO.tSWAy5cIOEODaagusQJER2z6RF1PfBYIqCIn6vji\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/login",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "13"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"d-kpwov47mirJihO3r58suSpFMNPo\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:27:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"auth\": true\n}"
+						}
+					]
 				},
 				{
 					"name": "/users/",
@@ -181,7 +408,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "/users/",
+							"raw": "{{URL}}/users/",
+							"host": [
+								"{{URL}}"
+							],
 							"path": [
 								"users",
 								""
@@ -205,15 +435,24 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Maria Silva\",\r\n    \"email\": \"maria.silva@example.com\",\r\n    \"ra\": \"1234567\",\r\n    \"password\": \"SenhaNaosegura123!\",\r\n    \"isAdmin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/users/email/{{user_email}}",
+							"raw": "{{URL}}/users/email/maria.silva@example.com",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"users",
 								"email",
-								"{{user_email}}"
+								"maria.silva@example.com"
 							]
 						}
 					},
@@ -295,6 +534,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Arroz Integral\",\r\n    \"price\": 12.50,\r\n    \"sku\": \"ARZ-INT-001\",\r\n    \"origin\": \"Nacional\",\r\n    \"balance\": 100,\r\n    \"categories\": [\"grãos\", \"alimentos básicos\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/products/",
 							"host": [
@@ -306,7 +554,81 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Arroz integral",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Arroz Integral\",\r\n    \"price\": 12.50,\r\n    \"sku\": \"ARZ-INT-001\",\r\n    \"origin\": \"Nacional\",\r\n    \"balance\": 100,\r\n    \"categories\": [\"grãos\", \"alimentos básicos\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/products/",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "144"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"90-dAftJjuQxnpKydi0QopYxu53jKs\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 06:01:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
+						}
+					]
 				},
 				{
 					"name": "/products/",
@@ -352,24 +674,84 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/id/:id",
+							"raw": "{{URL}}/products/id/1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"id",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"1"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "id 1",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/products/id/1",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"products",
+										"id",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "144"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"90-PP4WPUY5DM9SFOjh3SPCRaXUgZA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:55:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
+						}
+					]
 				},
 				{
 					"name": "/products/name/:name",
@@ -387,24 +769,84 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/name/:name",
+							"raw": "{{URL}}/products/name/arroz",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"name",
-								":name"
-							],
-							"variable": [
-								{
-									"key": "name",
-									"value": ""
-								}
+								"arroz"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Arroz",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/products/name/arroz",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"products",
+										"name",
+										"arroz"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "144"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"90-PP4WPUY5DM9SFOjh3SPCRaXUgZA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:57:23 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
+						}
+					]
 				},
 				{
 					"name": "/products/origin/:origin",
@@ -422,24 +864,84 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/origin/:origin",
+							"raw": "{{URL}}/products/origin/nacional",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"origin",
-								":origin"
-							],
-							"variable": [
-								{
-									"key": "origin",
-									"value": ""
-								}
+								"nacional"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Nacional",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/products/origin/nacional",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"products",
+										"origin",
+										"nacional"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "146"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"92-piRv6wFadBROZI/WiO+HC2M+9Pw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:57:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Arroz Integral\",\n        \"price\": 12.5,\n        \"sku\": \"ARZ-INT-001\",\n        \"origin\": \"Nacional\",\n        \"balance\": 100,\n        \"categories\": [\n            \"grãos\",\n            \"alimentos básicos\"\n        ]\n    }\n]"
+						}
+					]
 				},
 				{
 					"name": "/products/:id",
@@ -491,19 +993,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/:id",
+							"raw": "{{URL}}/products/2",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"2"
 							]
 						}
 					},
@@ -529,6 +1025,15 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"produto_id\": 1,         // ID do produto (inteiro)\r\n    \"usuario_id\": 2,         // ID do usuário (inteiro)\r\n    \"tipo\": \"entrada\",       // \"entrada\" ou \"saida\" (verificando o ENUM `tipo_movimentacao`)\r\n    \"quantidade_movimentada\": 10,\r\n    \"observacoes\": \"Entrada de estoque inicial\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/moviment/",
 							"host": [
@@ -540,10 +1045,87 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Movimentacao 1",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"produto_id\": 1,         // ID do produto (inteiro)\r\n    \"usuario_id\": 2,         // ID do usuário (inteiro)\r\n    \"tipo\": \"entrada\",       // \"entrada\" ou \"saida\" (verificando o ENUM `tipo_movimentacao`)\r\n    \"quantidade_movimentada\": 10,\r\n    \"observacoes\": \"Entrada de estoque inicial\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/moviment/",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"moviment",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173/"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "190"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"be-/uyQ/fZL0mINk3OTwyVnV6C27jM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 22 Jun 2025 05:58:41 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"props\": {\n        \"id_vendas\": 4,\n        \"produto_id\": 1,\n        \"usuario_id\": 2,\n        \"tipo\": \"entrada\",\n        \"quantidade_movimentada\": 10,\n        \"data_movimentacao\": \"2025-06-22T05:58:41.828Z\",\n        \"observacoes\": \"Entrada de estoque inicial\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "/moviment/",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -557,6 +1139,15 @@
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/moviment/",
 							"host": [
@@ -637,7 +1228,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "/:id_vendas",
 					"request": {
 						"auth": {
 							"type": "bearer",
