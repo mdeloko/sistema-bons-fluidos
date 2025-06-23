@@ -3,11 +3,12 @@
  */
 export type CreateProductDto = {
     name: string;
+    description?: string; // ADICIONADO: Propriedade para a descrição (opcional, conforme JSON de exemplo)
     price: number;
     sku: string;
-    origin: string; // Adicionada: A origem é obrigatória na criação
-    balance: number;
+    quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
     categories?: string[];
+    // 'origin' REMOVIDO: Não existe mais na entidade Product
 };
 
 /**
@@ -35,19 +36,11 @@ export type UpdateProductSkuDto = {
 };
 
 /**
- * DTO para atualização da origem de um produto.
+ * DTO para atualização da quantidade (estoque) de um produto.
  */
-export type UpdateProductOriginDto = {
+export type UpdateProductQuantidadeDto = { // RENOMEADO: UpdateProductBalanceDto para UpdateProductQuantidadeDto
     id: string;
-    origin: string;
-};
-
-/**
- * DTO para atualização do balanço (estoque) de um produto.
- */
-export type UpdateProductBalanceDto = {
-    id: string;
-    balance: number;
+    quantidade: number; // RENOMEADO: 'balance' para 'quantidade'
 };
 
 /**
@@ -56,6 +49,14 @@ export type UpdateProductBalanceDto = {
 export type UpdateProductCategoriesDto = {
     id: string;
     categories: string[];
+};
+
+/**
+ * DTO para atualização da descrição de um produto.
+ */
+export type UpdateProductDescriptionDto = { // NOVO DTO: Para atualizar a descrição
+    id: string;
+    description?: string;
 };
 
 /**
@@ -72,11 +73,12 @@ export type DeleteProductDto = {
 export type FullProductDto = {
     id: string;
     name: string;
+    description?: string; // ADICIONADO: Inclui a propriedade 'description'
     price: number;
     sku: string;
-    origin: string; // Adicionada: Parte da representação completa
-    balance: number;
+    quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
     categories: string[];
+    // 'origin' REMOVIDO: Não existe mais na entidade Product
     createdAt?: Date; // Opcional: Se seu DB gerencia
     updatedAt?: Date; // Opcional: Se seu DB gerencia
 };
@@ -86,4 +88,4 @@ export type FullProductDto = {
  * Atualmente idêntico ao FullProductDto, mas pode ser diferenciado no futuro
  * para remover campos sensíveis se necessário.
  */
-export type SafeProductDto = FullProductDto;
+export type SafeProductDto = FullProductDto; // Reflete as mudanças em FullProductDto

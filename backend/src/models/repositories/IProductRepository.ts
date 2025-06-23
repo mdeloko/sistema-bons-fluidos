@@ -31,14 +31,7 @@ export interface IProductRepository {
      * @param name O nome do produto a ser buscado.
      * @returns A entidade Product encontrada, ou null se nenhum produto for encontrado.
      */
-    findByName(name: string): Promise<Product | null>; // Adicionado
-
-    /**
-     * Busca produtos no banco de dados pela sua origem.
-     * @param origin A origem dos produtos a serem buscados.
-     * @returns Um array de entidades Product. Pode ser um array vazio se não houver produtos.
-     */
-    findByOrigin(origin: string): Promise<Product[]>; // Adicionado
+    findByName(name: string): Promise<Product | null>; 
 
     /**
      * Busca todos os produtos no banco de dados.

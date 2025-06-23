@@ -1,15 +1,16 @@
 /**
  * Define as propriedades de um produto.
- * 'id' e 'categories' são opcionais.
+ * 'id', 'description' e 'categories' são opcionais.
  */
 type ProductProps = {
     id?: string;
     name: string;
+    description?: string; // Propriedade para a "Descrição"
     price: number;
     sku: string;
-    origin: string; // Adicionada a propriedade 'origin'
+    quantidade: number; // <<-- RENOMEADO: 'balance' agora é 'quantidade'
     categories?: string[];
-    balance: number;
+    // 'origin' removido
 };
 
 /**
@@ -21,11 +22,9 @@ export class Product {
         if (props.price < 0) {
             throw new Error("O preço do produto não pode ser negativo.");
         }
-        if (props.balance < 0) {
-            throw new Error("O balanço inicial do produto não pode ser negativo.");
-        }
-        if (!props.origin || props.origin.trim() === "") {
-            throw new Error("A origem do produto não pode ser vazia.");
+        // Validação RENOMEADA: 'balance' para 'quantidade'
+        if (props.quantidade < 0) {
+            throw new Error("A quantidade inicial do produto não pode ser negativa.");
         }
     }
 
@@ -37,11 +36,13 @@ export class Product {
         name: string,
         price: number,
         sku: string,
-        origin: string, // Adicionada ao método create
-        balance: number,
+        quantidade: number, // <<-- RENOMEADO: 'balance' agora é 'quantidade'
+        description?: string, // Parâmetro opcional para descrição
         categories?: string[],
+        // 'origin' removido dos parâmetros
     ): Product {
-        return new Product({ name, price, sku, origin, balance, categories });
+        // Objeto passado para o construtor, 'quantidade' e 'description'
+        return new Product({ name, price, sku, quantidade, description, categories });
     }
 
     /**
@@ -68,6 +69,10 @@ export class Product {
         return this.props.name;
     }
 
+    public get description(): string | undefined { // Getter para a descrição
+        return this.props.description;
+    }
+
     public get price(): number {
         return this.props.price;
     }
@@ -76,23 +81,22 @@ export class Product {
         return this.props.sku;
     }
 
-    public get origin(): string {
-        return this.props.origin;
-    }
+    // 'origin' getter removido
 
     public get categories(): string[] {
         // Retorna um array vazio se não houver categorias definidas, garantindo que nunca seja 'undefined'
         return this.props.categories || [];
     }
 
-    public get balance(): number {
-        return this.props.balance;
+    // RENOMEADO: Getter para a quantidade
+    public get quantidade(): number {
+        return this.props.quantidade;
     }
 
     // --- Métodos de Comportamento (Lógica de Negócio) ---
 
     /**
-     * Aumenta o balanço (estoque) do produto.
+     * Aumenta a quantidade (estoque) do produto.
      * @param amount A quantidade a ser adicionada. Deve ser um número positivo.
      * @throws {Error} Se a quantidade for inválida.
      */
@@ -100,11 +104,11 @@ export class Product {
         if (amount <= 0) {
             throw new Error("A quantidade para adicionar ao estoque deve ser maior que zero.");
         }
-        this.props.balance += amount;
+        this.props.quantidade += amount; // <<-- RENOMEADO
     }
 
     /**
-     * Diminui o balanço (estoque) do produto.
+     * Diminui a quantidade (estoque) do produto.
      * @param amount A quantidade a ser removida. Deve ser um número positivo.
      * @throws {Error} Se a quantidade for inválida ou maior que o estoque disponível.
      */
@@ -112,12 +116,13 @@ export class Product {
         if (amount <= 0) {
             throw new Error("A quantidade para remover do estoque deve ser maior que zero.");
         }
-        if (amount > this.props.balance) {
+        // Validação RENOMEADA: 'balance' para 'quantidade'
+        if (amount > this.props.quantidade) {
             throw new Error(
                 "A quantia solicitada para remoção de estoque é maior que a quantia em estoque!",
             );
         }
-        this.props.balance -= amount;
+        this.props.quantidade -= amount; // <<-- RENOMEADO
     }
 
     /**
@@ -157,16 +162,14 @@ export class Product {
     }
 
     /**
-     * Atualiza a origem do produto.
-     * @param newOrigin A nova origem do produto. Não pode ser vazia.
-     * @throws {Error} Se a nova origem for vazia.
+     * Atualiza a descrição do produto.
+     * @param newDescription A nova descrição do produto. Pode ser vazio.
      */
-    public updateOrigin(newOrigin: string): void {
-        if (!newOrigin || newOrigin.trim() === "") {
-            throw new Error("A origem do produto não pode ser vazia.");
-        }
-        this.props.origin = newOrigin;
+    public updateDescription(newDescription?: string): void {
+        this.props.description = newDescription;
     }
+
+    // 'updateOrigin' método removido
 
     /**
      * Define ou atualiza as categorias do produto.
@@ -177,10 +180,6 @@ export class Product {
         if (!Array.isArray(newCategories) || newCategories.some(c => typeof c !== 'string')) {
             throw new Error("As categorias devem ser um array de strings.");
         }
-        // Opcional: Adicionar validação se o array de categorias não pode ser vazio
-        // if (newCategories.length === 0) {
-        //     throw new Error("O produto deve ter ao menos uma categoria.");
-        // }
         this.props.categories = newCategories;
     }
 }

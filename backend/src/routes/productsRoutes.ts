@@ -19,6 +19,5 @@ router.post("/", verifyJWT, (req, res) => productController.createProduct(req, r
 router.get("/", verifyJWT, (req, res) => productController.getAllProducts(req, res));
 router.get("/id/:id", verifyJWT, (req, res) => productController.getProductById(req, res));
 router.get("/name/:name", verifyJWT, (req, res) => productController.getProductByName(req, res));
-router.get("/origin/:origin", verifyJWT, (req, res) => productController.getProductsByOrigin(req, res));
 router.put("/:id", verifyJWT, (req, res) => productController.updateProduct(req, res));
 router.delete("/:id", verifyJWT, (req, res) => productController.deleteProduct(req, res));

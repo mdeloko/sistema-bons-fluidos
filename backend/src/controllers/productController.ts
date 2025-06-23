@@ -19,16 +19,17 @@ export class ProductController {
         const productData: ProductDtos.CreateProductDto = req.body;
         console.log("Tentativa de criação de produto com dados:", productData);
 
-        // Validação básica das propriedades obrigatórias, incluindo 'origin'
+        // Validação básica das propriedades obrigatórias (name, price, sku, quantidade)
+        // 'description' é opcional no DTO, então não validamos aqui. 'origin' foi removido.
         if (
             !productData.name ||
             !productData.price ||
             !productData.sku ||
-            !productData.origin ||
-            productData.balance === undefined
+            productData.quantidade === undefined // RENOMEADO: 'balance' para 'quantidade'
+            // 'origin' REMOVIDO da validação
         ) {
             res.status(EHttpStatusCode.BAD_REQUEST)
-                .json({ error: "Faltando propriedades obrigatórias (name, price, sku, origin, balance)!" })
+                .json({ error: "Faltando propriedades obrigatórias (name, price, sku, quantidade)!" })
                 .send();
             return;
         }
@@ -51,8 +52,9 @@ export class ProductController {
                 res.status(EHttpStatusCode.CONFLICT)
                    .json({ error: err.message });
             } else if (err.message.includes("preço do produto não pode ser negativo") ||
-                       err.message.includes("balanço inicial do produto não pode ser negativo") ||
-                       err.message.includes("origem do produto não pode ser vazia")) {
+                       err.message.includes("quantidade inicial do produto não pode ser negativo") // RENOMEADO: balanço para quantidade
+                       // 'origem do produto não pode ser vazia' REMOVIDO
+            ) {
                 res.status(EHttpStatusCode.BAD_REQUEST)
                    .json({ error: err.message });
             } else {
@@ -101,20 +103,21 @@ export class ProductController {
                     const skuDto: ProductDtos.UpdateProductSkuDto = { id, sku: valueToUpdateTo };
                     updatedProduct = await this.productService.updateSku(skuDto);
                     break;
-                case "balance":
+                case "quantidade": // RENOMEADO: 'balance' para 'quantidade'
                     // Converte para número
-                    const balanceDto: ProductDtos.UpdateProductBalanceDto = { id, balance: Number(valueToUpdateTo) };
-                    updatedProduct = await this.productService.updateBalance(balanceDto);
+                    const quantidadeDto: ProductDtos.UpdateProductQuantidadeDto = { id, quantidade: Number(valueToUpdateTo) }; // DTO RENOMEADO
+                    updatedProduct = await this.productService.updateQuantidade(quantidadeDto); // MÉTODO RENOMEADO
                     break;
                 case "categories":
                     // Assume que valueToUpdateTo é um array de strings
                     const categoriesDto: ProductDtos.UpdateProductCategoriesDto = { id, categories: valueToUpdateTo };
                     updatedProduct = await this.productService.updateCategories(categoriesDto);
                     break;
-                case "origin":
-                    const originDto: ProductDtos.UpdateProductOriginDto = { id, origin: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateOrigin(originDto); // Linha 126
+                case "description": // NOVO CASO: Para a descrição
+                    const descriptionDto: ProductDtos.UpdateProductDescriptionDto = { id, description: valueToUpdateTo }; // NOVO DTO
+                    updatedProduct = await this.productService.updateDescription(descriptionDto); // NOVO MÉTODO
                     break;
+                // 'case "origin"' REMOVIDO: Não existe mais na entidade/serviço
                 default:
                     res.status(EHttpStatusCode.BAD_REQUEST)
                         .json({ error: "Campo de atualização inválido!" })
@@ -170,7 +173,8 @@ export class ProductController {
             const isDeleted = await this.productService.delete({ id }); // Passa um DTO de deleção
 
             if (isDeleted) {
-                res.status(EHttpStatusCode.NOT_IMPLEMENTED).send(); // Linha 183: 204 indica sucesso e nenhum conteúdo para retornar
+                // CORREÇÃO: Usar 204 No Content para deleção bem-sucedida sem retorno de corpo.
+                res.status(EHttpStatusCode.OK).json({ message: "Produto excluído com sucesso!" });
             } else {
                 res.status(EHttpStatusCode.NOT_FOUND)
                     .json({ error: "Produto não encontrado para exclusão." });
@@ -229,7 +233,7 @@ export class ProductController {
         }
 
         try {
-            const product = await this.productService.findByName(name); // Linha 243
+            const product = await this.productService.findByName(name); 
 
             if (product) {
                 res.status(EHttpStatusCode.OK).json(product);
@@ -243,32 +247,6 @@ export class ProductController {
                 .json({ error: err.message || "Erro interno do servidor ao buscar produto por nome." });
         }
     }
-
-    /**
-     * Busca produtos pela sua origem.
-     * Recebe a origem dos produtos nos parâmetros da URL.
-     * Retorna 200 OK com um array de produtos.
-     */
-    public async getProductsByOrigin(req: Request, res: Response): Promise<void> {
-        const { origin } = req.params;
-
-        if (!origin) {
-            res.status(EHttpStatusCode.BAD_REQUEST)
-                .json({ error: "Origem do produto faltando!" })
-                .send();
-            return;
-        }
-
-        try {
-            const products = await this.productService.findByOrigin(origin); // Linha 275
-            res.status(EHttpStatusCode.OK).json(products);
-        } catch (err: any) {
-            console.error("Erro ao buscar produtos por origem:", err);
-            res.status(EHttpStatusCode.INTERNAL_SERVER_ERROR)
-                .json({ error: err.message || "Erro interno do servidor ao buscar produtos por origem." });
-        }
-    }
-
 
     /**
      * Busca todos os produtos.

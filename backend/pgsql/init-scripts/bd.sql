@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS produtos
     preco numeric(10,2) NOT NULL,
     quantidade integer NOT NULL DEFAULT 0,
     categoria_id text COLLATE pg_catalog."default" NOT NULL,
-    origin character varying(255) NOT NULL,
+    descricao character varying(500),
     criado_em timestamp WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT produtos_pkey PRIMARY KEY (id),
     CONSTRAINT produtos_sku_key UNIQUE (sku),

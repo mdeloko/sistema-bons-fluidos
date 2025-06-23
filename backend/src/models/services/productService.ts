@@ -9,10 +9,11 @@ function mapProductToFullProductDto(product: Product): ProductDtos.FullProductDt
     return {
         id: product.id,
         name: product.name,
+        description: product.description, // ADICIONADO: Inclui a propriedade 'description'
         price: product.price,
         sku: product.sku,
-        origin: product.origin, // Adicionado: inclui a propriedade 'origin'
-        balance: product.balance,
+        // 'origin' REMOVIDO: Não existe mais na entidade
+        quantidade: product.quantidade, // RENOMEADO: 'balance' agora é 'quantidade'
         categories: product.categories,
         // Adicione createdAt e updatedAt aqui se a sua entidade Product tiver essas propriedades
         // createdAt: product.createdAt,
@@ -39,13 +40,16 @@ export class ProductService {
         }
 
         try {
-            // Cria a entidade Product usando o método estático 'create', passando 'origin'
+            // Cria a entidade Product usando o método estático 'create',
+            // ajustando os parâmetros para as novas propriedades (quantidade, description)
+            // e removendo 'origin'.
             const newProduct = Product.create(
                 createDto.name,
                 createDto.price,
                 createDto.sku,
-                createDto.origin, // Adicionado: passa a origem para a criação da entidade
-                createDto.balance,
+                createDto.quantidade, // RENOMEADO: 'balance' para 'quantidade'
+                createDto.description, // ADICIONADO: Passa a descrição
+                // 'origin' REMOVIDO
                 createDto.categories
             );
 
@@ -82,7 +86,6 @@ export class ProductService {
      */
     public async findByName(name: string): Promise<ProductDtos.FullProductDto | null> {
         try {
-            // Assumindo que IProductRepository.findByName existe ou será criado
             const productEntity = await this.productRepository.findByName(name);
             if (!productEntity) {
                 return null;
@@ -96,19 +99,17 @@ export class ProductService {
 
     /**
      * Busca produtos pela sua origem.
-     * @param origin A origem dos produtos a serem buscados.
-     * @returns Um array de FullProductDto. Pode ser um array vazio se não houver produtos.
+     * REMOVIDO: Este método foi removido pois a propriedade 'origin' não existe mais na entidade Product.
      */
-    public async findByOrigin(origin: string): Promise<ProductDtos.FullProductDto[]> {
-        try {
-            // Assumindo que IProductRepository.findByOrigin existe ou será criado
-            const productEntities = await this.productRepository.findByOrigin(origin);
-            return productEntities.map(mapProductToFullProductDto);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao buscar produtos por origem ${origin}:`, error);
-            throw new Error(`Falha ao buscar produtos por origem: ${error.message}`);
-        }
-    }
+    // public async findByOrigin(origin: string): Promise<ProductDtos.FullProductDto[]> {
+    //     try {
+    //         const productEntities = await this.productRepository.findByOrigin(origin);
+    //         return productEntities.map(mapProductToFullProductDto);
+    //     } catch (error: any) {
+    //         console.error(`Erro no serviço ao buscar produtos por origem ${origin}:`, error);
+    //         throw new Error(`Falha ao buscar produtos por origem: ${error.message}`);
+    //     }
+    // }
 
     /**
      * Busca todos os produtos.
@@ -130,14 +131,12 @@ export class ProductService {
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de nome."); // Lança erro em vez de null
+                throw new Error("Produto não encontrado para atualização de nome."); 
             }
 
             productToUpdate.updateName(updateDto.name);
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
 
-            // O repositório deve retornar a entidade atualizada ou null se não encontrar.
-            // Se chegou aqui, o findById encontrou, então o update deveria funcionar.
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
@@ -203,23 +202,23 @@ export class ProductService {
     }
 
     /**
-     * Atualiza o balanço (estoque) de um produto.
+     * Atualiza a quantidade (estoque) de um produto.
      */
-    public async updateBalance(updateDto: ProductDtos.UpdateProductBalanceDto): Promise<ProductDtos.FullProductDto | null> {
+    public async updateQuantidade(updateDto: ProductDtos.UpdateProductQuantidadeDto): Promise<ProductDtos.FullProductDto | null> { // RENOMEADO: updateBalance para updateQuantidade
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de balanço.");
+                throw new Error("Produto não encontrado para atualização de quantidade."); // Mensagem ajustada
             }
 
             // Calcula a diferença e usa os métodos de aumento/diminuição da entidade
-            const currentBalance = productToUpdate.balance;
-            const newBalance = updateDto.balance;
+            const currentQuantidade = productToUpdate.quantidade; // RENOMEADO: balance para quantidade
+            const newQuantidade = updateDto.quantidade; // RENOMEADO: balance para quantidade
 
-            if (newBalance > currentBalance) {
-                productToUpdate.increaseProduct(newBalance - currentBalance);
-            } else if (newBalance < currentBalance) {
-                productToUpdate.decreaseProduct(currentBalance - newBalance);
+            if (newQuantidade > currentQuantidade) {
+                productToUpdate.increaseProduct(newQuantidade - currentQuantidade); // RENOMEADO: balance para quantidade
+            } else if (newQuantidade < currentQuantidade) {
+                productToUpdate.decreaseProduct(currentQuantidade - newQuantidade); // RENOMEADO: balance para quantidade
             }
 
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
@@ -229,8 +228,8 @@ export class ProductService {
             }
             return mapProductToFullProductDto(updatedProductEntity);
         } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar balanço do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar balanço do produto: ${error.message}`);
+            console.error(`Erro no serviço ao atualizar quantidade do produto ${updateDto.id}:`, error); // Mensagem ajustada
+            throw new Error(`Falha ao atualizar quantidade do produto: ${error.message}`); // Mensagem ajustada
         }
     }
 
@@ -258,18 +257,16 @@ export class ProductService {
     }
 
     /**
-     * Atualiza a origem de um produto.
-     * @param updateDto DTO com o ID do produto e a nova origem.
-     * @returns O produto atualizado como FullProductDto ou null se não for encontrado.
+     * Atualiza a descrição de um produto.
      */
-    public async updateOrigin(updateDto: ProductDtos.UpdateProductOriginDto): Promise<ProductDtos.FullProductDto | null> {
+    public async updateDescription(updateDto: ProductDtos.UpdateProductDescriptionDto): Promise<ProductDtos.FullProductDto | null> { // NOVO MÉTODO
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de origem.");
+                throw new Error("Produto não encontrado para atualização de descrição.");
             }
 
-            productToUpdate.updateOrigin(updateDto.origin); // Chama o método da entidade
+            productToUpdate.updateDescription(updateDto.description);
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
 
             if (!updatedProductEntity) {
@@ -277,10 +274,11 @@ export class ProductService {
             }
             return mapProductToFullProductDto(updatedProductEntity);
         } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar origem do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar origem do produto: ${error.message}`);
+            console.error(`Erro no serviço ao atualizar descrição do produto ${updateDto.id}:`, error);
+            throw new Error(`Falha ao atualizar descrição do produto: ${error.message}`);
         }
     }
+
 
     /**
      * Deleta um produto.
