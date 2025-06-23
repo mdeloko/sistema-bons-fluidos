@@ -20,13 +20,12 @@ export class ProductController {
         console.log("Tentativa de criação de produto com dados:", productData);
 
         // Validação básica das propriedades obrigatórias (name, price, sku, quantidade)
-        // 'description' é opcional no DTO, então não validamos aqui. 'origin' foi removido.
+        // 'description' e 'category' são opcionais no DTO.
         if (
             !productData.name ||
             !productData.price ||
             !productData.sku ||
-            productData.quantidade === undefined // RENOMEADO: 'balance' para 'quantidade'
-            // 'origin' REMOVIDO da validação
+            productData.quantidade === undefined
         ) {
             res.status(EHttpStatusCode.BAD_REQUEST)
                 .json({ error: "Faltando propriedades obrigatórias (name, price, sku, quantidade)!" })
@@ -52,9 +51,7 @@ export class ProductController {
                 res.status(EHttpStatusCode.CONFLICT)
                    .json({ error: err.message });
             } else if (err.message.includes("preço do produto não pode ser negativo") ||
-                       err.message.includes("quantidade inicial do produto não pode ser negativo") // RENOMEADO: balanço para quantidade
-                       // 'origem do produto não pode ser vazia' REMOVIDO
-            ) {
+                       err.message.includes("quantidade inicial do produto não pode ser negativo")) {
                 res.status(EHttpStatusCode.BAD_REQUEST)
                    .json({ error: err.message });
             } else {
@@ -95,7 +92,6 @@ export class ProductController {
                     updatedProduct = await this.productService.updateName(nameDto);
                     break;
                 case "price":
-                    // Converte para número, pois valueToUpdateTo virá como string do body
                     const priceDto: ProductDtos.UpdateProductPriceDto = { id, price: Number(valueToUpdateTo) };
                     updatedProduct = await this.productService.updatePrice(priceDto);
                     break;
@@ -104,20 +100,17 @@ export class ProductController {
                     updatedProduct = await this.productService.updateSku(skuDto);
                     break;
                 case "quantidade": // RENOMEADO: 'balance' para 'quantidade'
-                    // Converte para número
-                    const quantidadeDto: ProductDtos.UpdateProductQuantidadeDto = { id, quantidade: Number(valueToUpdateTo) }; // DTO RENOMEADO
-                    updatedProduct = await this.productService.updateQuantidade(quantidadeDto); // MÉTODO RENOMEADO
+                    const quantidadeDto: ProductDtos.UpdateProductQuantidadeDto = { id, quantidade: Number(valueToUpdateTo) };
+                    updatedProduct = await this.productService.updateQuantidade(quantidadeDto);
                     break;
-                case "categories":
-                    // Assume que valueToUpdateTo é um array de strings
-                    const categoriesDto: ProductDtos.UpdateProductCategoriesDto = { id, categories: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateCategories(categoriesDto);
+                case "category": // CORREÇÃO: 'categories' para 'category'
+                    const categoryDto: ProductDtos.UpdateProductCategoryDto = { id, category: valueToUpdateTo }; // DTO RENOMEADO
+                    updatedProduct = await this.productService.updateCategory(categoryDto); // MÉTODO RENOMEADO
                     break;
-                case "description": // NOVO CASO: Para a descrição
-                    const descriptionDto: ProductDtos.UpdateProductDescriptionDto = { id, description: valueToUpdateTo }; // NOVO DTO
-                    updatedProduct = await this.productService.updateDescription(descriptionDto); // NOVO MÉTODO
+                case "description":
+                    const descriptionDto: ProductDtos.UpdateProductDescriptionDto = { id, description: valueToUpdateTo };
+                    updatedProduct = await this.productService.updateDescription(descriptionDto);
                     break;
-                // 'case "origin"' REMOVIDO: Não existe mais na entidade/serviço
                 default:
                     res.status(EHttpStatusCode.BAD_REQUEST)
                         .json({ error: "Campo de atualização inválido!" })
@@ -128,13 +121,11 @@ export class ProductController {
             if (updatedProduct) {
                 res.status(EHttpStatusCode.OK).json(updatedProduct);
             } else {
-                // Se o serviço retornar null, pode ser que o produto não foi encontrado
                 res.status(EHttpStatusCode.NOT_FOUND)
                     .json({ error: "Produto não encontrado." });
             }
         } catch (err: any) {
             console.error("Erro ao atualizar produto:", err);
-            // Reflete erros específicos lançados pelo serviço/repositório
             if (err.message.includes("não encontrado") || err.message.includes("não existe")) {
                 res.status(EHttpStatusCode.NOT_FOUND)
                    .json({ error: err.message });
@@ -170,11 +161,10 @@ export class ProductController {
         }
 
         try {
-            const isDeleted = await this.productService.delete({ id }); // Passa um DTO de deleção
+            const isDeleted = await this.productService.delete({ id });
 
             if (isDeleted) {
-                // CORREÇÃO: Usar 204 No Content para deleção bem-sucedida sem retorno de corpo.
-                res.status(EHttpStatusCode.OK).json({ message: "Produto excluído com sucesso!" });
+                res.status(EHttpStatusCode.OK).json({ message: "Produto excluído com sucesso!" }); 
             } else {
                 res.status(EHttpStatusCode.NOT_FOUND)
                     .json({ error: "Produto não encontrado para exclusão." });
@@ -253,8 +243,12 @@ export class ProductController {
      * Retorna 200 OK com um array de produtos.
      */
     public async getAllProducts(req: Request, res: Response): Promise<void> {
+        // Pega o parâmetro 'search' da query string. Pode ser undefined.
+        const searchTerm = req.query.search as string | undefined; 
+
         try {
-            const products = await this.productService.findAll();
+            // Passa o searchTerm para o serviço
+            const products = await this.productService.findAll(searchTerm); 
             res.status(EHttpStatusCode.OK).json(products);
         } catch (err: any) {
             console.error("Erro ao buscar todos os produtos:", err);

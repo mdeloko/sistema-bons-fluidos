@@ -1,6 +1,6 @@
 /**
  * Define as propriedades de um produto.
- * 'id', 'description' e 'categories' são opcionais.
+ * 'id', 'description' e 'category' são opcionais.
  */
 type ProductProps = {
     id?: string;
@@ -9,7 +9,7 @@ type ProductProps = {
     price: number;
     sku: string;
     quantidade: number; // <<-- RENOMEADO: 'balance' agora é 'quantidade'
-    categories?: string[];
+    category?: string; // <<-- MODIFICADO: 'categories' agora é 'category' e é uma string opcional
     // 'origin' removido
 };
 
@@ -38,11 +38,11 @@ export class Product {
         sku: string,
         quantidade: number, // <<-- RENOMEADO: 'balance' agora é 'quantidade'
         description?: string, // Parâmetro opcional para descrição
-        categories?: string[],
+        category?: string, // <<-- MODIFICADO: 'categories' agora é 'category' e é uma string opcional
         // 'origin' removido dos parâmetros
     ): Product {
-        // Objeto passado para o construtor, 'quantidade' e 'description'
-        return new Product({ name, price, sku, quantidade, description, categories });
+        // Objeto passado para o construtor, 'quantidade', 'description' e 'category'
+        return new Product({ name, price, sku, quantidade, description, category });
     }
 
     /**
@@ -83,9 +83,9 @@ export class Product {
 
     // 'origin' getter removido
 
-    public get categories(): string[] {
-        // Retorna um array vazio se não houver categorias definidas, garantindo que nunca seja 'undefined'
-        return this.props.categories || [];
+    public get category(): string | undefined { // <<-- MODIFICADO: Getter para 'category' (singular)
+        // Retorna string vazia se não houver categoria definida
+        return this.props.category || '';
     }
 
     // RENOMEADO: Getter para a quantidade
@@ -172,14 +172,10 @@ export class Product {
     // 'updateOrigin' método removido
 
     /**
-     * Define ou atualiza as categorias do produto.
-     * @param newCategories Um array de strings representando as novas categorias.
-     * @throws {Error} Se as categorias não forem um array de strings.
+     * Define ou atualiza a categoria do produto.
+     * @param newCategory A nova categoria como string.
      */
-    public updateCategories(newCategories: string[]): void {
-        if (!Array.isArray(newCategories) || newCategories.some(c => typeof c !== 'string')) {
-            throw new Error("As categorias devem ser um array de strings.");
-        }
-        this.props.categories = newCategories;
+    public updateCategory(newCategory?: string): void { // <<-- MODIFICADO: 'updateCategories' agora é 'updateCategory' e aceita string
+        this.props.category = newCategory;
     }
 }

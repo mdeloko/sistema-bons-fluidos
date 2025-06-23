@@ -7,7 +7,7 @@ export type CreateProductDto = {
     price: number;
     sku: string;
     quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
-    categories?: string[];
+    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
     // 'origin' REMOVIDO: Não existe mais na entidade Product
 };
 
@@ -44,11 +44,11 @@ export type UpdateProductQuantidadeDto = { // RENOMEADO: UpdateProductBalanceDto
 };
 
 /**
- * DTO para atualização das categorias de um produto.
+ * DTO para atualização da categoria de um produto.
  */
-export type UpdateProductCategoriesDto = {
+export type UpdateProductCategoryDto = { // CORREÇÃO: UpdateProductCategoriesDto para UpdateProductCategoryDto
     id: string;
-    categories: string[];
+    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
 };
 
 /**
@@ -77,7 +77,7 @@ export type FullProductDto = {
     price: number;
     sku: string;
     quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
-    categories: string[];
+    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
     // 'origin' REMOVIDO: Não existe mais na entidade Product
     createdAt?: Date; // Opcional: Se seu DB gerencia
     updatedAt?: Date; // Opcional: Se seu DB gerencia

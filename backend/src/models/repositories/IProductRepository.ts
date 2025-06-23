@@ -34,10 +34,11 @@ export interface IProductRepository {
     findByName(name: string): Promise<Product | null>; 
 
     /**
-     * Busca todos os produtos no banco de dados.
+     * Busca todos os produtos no banco de dados, opcionalmente filtrando por um termo de busca.
+     * @param searchTerm O termo a ser usado para filtrar produtos por nome, SKU ou descrição.
      * @returns Um array de entidades Product. Pode ser um array vazio se não houver produtos.
      */
-    findAll(): Promise<Product[]>;
+    findAll(searchTerm?: string): Promise<Product[]>; // <<-- ATUALIZADO: Aceita searchTerm
 
     /**
      * Atualiza um produto existente no banco de dados.

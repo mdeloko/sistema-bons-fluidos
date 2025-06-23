@@ -19,18 +19,18 @@ export class ProductRepository implements IProductRepository {
     public async create(product: Product): Promise<Product> {
         // Conecta ao banco de dados usando a utilidade DBConnection
         await using db = await DBConnection.connect();
-        // Desestruturando: 'balance' agora é 'quantidade', 'origin' removido, 'description' adicionado
-        const { name, price, sku, quantidade, categories, description } = product; 
+        // Desestruturando: 'categories' agora é 'category'
+        const { name, price, sku, quantidade, category, description } = product; 
 
         try {
             // Executa o comando INSERT e retorna todos os campos para reconstruir a entidade
-            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao (novo)
-            // PARÂMETROS: name, price, sku, quantidade, categories, description
+            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao
+            // PARÂMETROS: name, price, sku, quantidade, category, description
             const result: QueryResult = await db.query(
                 `INSERT INTO produtos (nome, preco, sku, quantidade, categoria_id, descricao)
                  VALUES ($1, $2, $3, $4, $5, $6)
                  RETURNING id, nome, preco, sku, quantidade, categoria_id, descricao;`, 
-                [name, price, sku, quantidade, JSON.stringify(categories || []), description] 
+                [name, price, sku, quantidade, category || null, description] // CORREÇÃO: Passando 'category' diretamente
             );
 
             // Reconstitui a entidade Product com os dados retornados pelo DB
@@ -38,12 +38,11 @@ export class ProductRepository implements IProductRepository {
             return Product.fromExisting({
                 id: newProductData.id,
                 name: newProductData.nome, 
-                description: newProductData.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                description: newProductData.descricao, 
                 price: parseFloat(newProductData.preco), 
                 sku: newProductData.sku,
-                quantidade: parseInt(newProductData.quantidade, 10), // <<-- 'quantidade' do DB para 'quantidade' da entidade
-                categories: JSON.parse(newProductData.categoria_id || '[]'), 
-                // 'origin' removido completamente
+                quantidade: parseInt(newProductData.quantidade, 10), 
+                category: newProductData.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
             });
 
         } catch (error: any) {
@@ -64,7 +63,7 @@ export class ProductRepository implements IProductRepository {
     public async findById(id: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'descricao'
+            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE id = $1;", 
                 [id]
@@ -76,12 +75,11 @@ export class ProductRepository implements IProductRepository {
                 return Product.fromExisting({
                     id: row.id,
                     name: row.nome, 
-                    description: row.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                    description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
                     quantidade: parseInt(row.quantidade, 10), 
-                    categories: JSON.parse(row.categoria_id || '[]'), 
-                    // 'origin' removido
+                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
                 });
             }
             return null; // Nenhuma linha encontrada
@@ -101,7 +99,7 @@ export class ProductRepository implements IProductRepository {
     public async findBySku(sku: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'descricao'
+            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE sku = $1;", 
                 [sku]
@@ -112,12 +110,11 @@ export class ProductRepository implements IProductRepository {
                 return Product.fromExisting({
                     id: row.id,
                     name: row.nome, 
-                    description: row.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                    description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
                     quantidade: parseInt(row.quantidade, 10), 
-                    categories: JSON.parse(row.categoria_id || '[]'), 
-                    // 'origin' removido
+                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
                 });
             }
             return null;
@@ -136,7 +133,7 @@ export class ProductRepository implements IProductRepository {
     public async findByName(name: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'descricao'
+            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE nome ILIKE $1;", 
                 [`%${name}%`] 
@@ -147,12 +144,11 @@ export class ProductRepository implements IProductRepository {
                 return Product.fromExisting({
                     id: row.id,
                     name: row.nome, 
-                    description: row.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                    description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
                     quantidade: parseInt(row.quantidade, 10), 
-                    categories: JSON.parse(row.categoria_id || '[]'), 
-                    // 'origin' removido
+                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
                 });
             }
             return null;
@@ -163,37 +159,35 @@ export class ProductRepository implements IProductRepository {
     }
 
     /**
-     * Busca produtos no banco de dados pela sua origem.
-     * REMOVIDO: Este método foi removido pois a coluna 'origin' não existe mais no esquema do DB.
+     * Busca todos os produtos no banco de dados, opcionalmente filtrando por um termo de busca.
+     * O filtro é aplicado nas colunas 'nome', 'sku' e 'descricao'.
+     * @param searchTerm O termo a ser usado para filtrar produtos.
+     * @returns Um array de entidades Product.
      */
-    // public async findByOrigin(origin: string): Promise<Product[]> { /* ... código ... */ }
-
-
-    /**
-     * Busca todos os produtos no banco de dados.
-     * @returns Um array de entidades Product. Pode ser um array vazio se não houver produtos.
-     * @throws {Error} Se houver um erro de banco de dados.
-     */
-    public async findAll(): Promise<Product[]> {
+    public async findAll(searchTerm?: string): Promise<Product[]> { // <<-- RECEBE searchTerm
         await using db = await DBConnection.connect();
-        try {
-            // Selecionando 'descricao'
-            const result: QueryResult = await db.query(
-                "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos;" 
-            );
+        let query = "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos";
+        const values: string[] = [];
 
-            // Mapeia todas as linhas retornadas para um array de entidades Product
+        if (searchTerm) {
+            // Adiciona a cláusula WHERE para filtrar por nome, SKU ou descricao (case-insensitive)
+            query += " WHERE nome ILIKE $1 OR sku ILIKE $1 OR descricao ILIKE $1";
+            values.push(`%${searchTerm}%`); // O parâmetro para a query
+        }
+
+        try {
+            const result: QueryResult = await db.query(query, values); // Passa a query e os valores
+
             return result.rows.map((row: any) => {
                 try {
                     return Product.fromExisting({
                         id: row.id,
                         name: row.nome, 
-                        description: row.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                        description: row.descricao, 
                         price: parseFloat(row.preco), 
                         sku: row.sku,
                         quantidade: parseInt(row.quantidade, 10), 
-                        categories: JSON.parse(row.categoria_id || '[]'), 
-                        // 'origin' removido
+                        category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
                     });
                 } catch (entityError: any) {
                     console.error(`Erro ao criar entidade Product a partir da linha do DB (ID: ${row.id || 'N/A'}):`, entityError);
@@ -216,18 +210,18 @@ export class ProductRepository implements IProductRepository {
      */
     public async update(id: string, product: Product): Promise<Product | null> {
         await using db = await DBConnection.connect();
-        // Desestruturando: 'balance' agora é 'quantidade', 'origin' removido, 'description' adicionado
-        const { name, price, sku, quantidade, categories, description } = product;
+        // Desestruturando: 'categories' agora é 'category'
+        const { name, price, sku, quantidade, category, description } = product;
 
         try {
-            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao (novo)
-            // PARÂMETROS: name, price, sku, quantidade, categories, description
+            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao
+            // PARÂMETROS: name, price, sku, quantidade, category, description
             const result: QueryResult = await db.query(
                 `UPDATE produtos
                  SET nome = $1, preco = $2, sku = $3, quantidade = $4, categoria_id = $5, descricao = $6
                  WHERE id = $7
                  RETURNING id, nome, preco, sku, quantidade, categoria_id, descricao;`, 
-                [name, price, sku, quantidade, JSON.stringify(categories || []), description, id] 
+                [name, price, sku, quantidade, category || null, description, id] // CORREÇÃO: Passando 'category' diretamente
             );
 
             if (result.rowCount && result.rowCount > 0) {
@@ -236,12 +230,11 @@ export class ProductRepository implements IProductRepository {
                 return Product.fromExisting({
                     id: updatedProductData.id,
                     name: updatedProductData.nome, 
-                    description: updatedProductData.descricao, // <<-- Mapeando 'descricao' do DB para 'description' da entidade
+                    description: updatedProductData.descricao, 
                     price: parseFloat(updatedProductData.preco), 
                     sku: updatedProductData.sku,
                     quantidade: parseInt(updatedProductData.quantidade, 10), 
-                    categories: JSON.parse(updatedProductData.categoria_id || '[]'), 
-                    // 'origin' removido
+                    category: updatedProductData.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
                 });
             }
             return null; // Nenhuma linha atualizada (produto não encontrado)

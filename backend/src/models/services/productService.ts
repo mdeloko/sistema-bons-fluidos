@@ -9,12 +9,11 @@ function mapProductToFullProductDto(product: Product): ProductDtos.FullProductDt
     return {
         id: product.id,
         name: product.name,
-        description: product.description, // ADICIONADO: Inclui a propriedade 'description'
+        description: product.description, // Inclui a propriedade 'description'
         price: product.price,
         sku: product.sku,
-        // 'origin' REMOVIDO: Não existe mais na entidade
-        quantidade: product.quantidade, // RENOMEADO: 'balance' agora é 'quantidade'
-        categories: product.categories,
+        quantidade: product.quantidade, // 'balance' agora é 'quantidade'
+        category: product.category, // CORREÇÃO: 'categories' agora é 'category'
         // Adicione createdAt e updatedAt aqui se a sua entidade Product tiver essas propriedades
         // createdAt: product.createdAt,
         // updatedAt: product.updatedAt,
@@ -41,16 +40,15 @@ export class ProductService {
 
         try {
             // Cria a entidade Product usando o método estático 'create',
-            // ajustando os parâmetros para as novas propriedades (quantidade, description)
+            // ajustando os parâmetros para as novas propriedades (quantidade, description, category)
             // e removendo 'origin'.
             const newProduct = Product.create(
                 createDto.name,
                 createDto.price,
                 createDto.sku,
-                createDto.quantidade, // RENOMEADO: 'balance' para 'quantidade'
-                createDto.description, // ADICIONADO: Passa a descrição
-                // 'origin' REMOVIDO
-                createDto.categories
+                createDto.quantidade, // 'balance' para 'quantidade'
+                createDto.description, // Passa a descrição
+                createDto.category // CORREÇÃO: Passa 'category' (string única)
             );
 
             // Persiste a entidade usando o repositório
@@ -114,9 +112,9 @@ export class ProductService {
     /**
      * Busca todos os produtos.
      */
-    public async findAll(): Promise<ProductDtos.FullProductDto[]> {
+    public async findAll(searchTerm?: string): Promise<ProductDtos.FullProductDto[]> { // <<-- RECEBE searchTerm
         try {
-            const productEntities = await this.productRepository.findAll();
+            const productEntities = await this.productRepository.findAll(searchTerm); // <<-- PASSA searchTerm
             return productEntities.map(mapProductToFullProductDto);
         } catch (error: any) {
             console.error("Erro no serviço ao buscar todos os produtos:", error);
@@ -133,10 +131,8 @@ export class ProductService {
             if (!productToUpdate) {
                 throw new Error("Produto não encontrado para atualização de nome."); 
             }
-
             productToUpdate.updateName(updateDto.name);
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
@@ -156,10 +152,8 @@ export class ProductService {
             if (!productToUpdate) {
                 throw new Error("Produto não encontrado para atualização de preço.");
             }
-
             productToUpdate.updatePrice(updateDto.price);
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
@@ -179,18 +173,14 @@ export class ProductService {
             if (!productToUpdate) {
                 throw new Error("Produto não encontrado para atualização de SKU.");
             }
-
-            // Lógica de negócio: Verificar se o novo SKU já existe para outro produto
             if (productToUpdate.sku !== updateDto.sku) {
                 const existingProductWithNewSku = await this.productRepository.findBySku(updateDto.sku);
                 if (existingProductWithNewSku && existingProductWithNewSku.id !== productToUpdate.id) {
                     throw new Error("SKU já utilizado por outro produto.");
                 }
             }
-
             productToUpdate.updateSku(updateDto.sku);
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
@@ -204,46 +194,42 @@ export class ProductService {
     /**
      * Atualiza a quantidade (estoque) de um produto.
      */
-    public async updateQuantidade(updateDto: ProductDtos.UpdateProductQuantidadeDto): Promise<ProductDtos.FullProductDto | null> { // RENOMEADO: updateBalance para updateQuantidade
+    public async updateQuantidade(updateDto: ProductDtos.UpdateProductQuantidadeDto): Promise<ProductDtos.FullProductDto | null> { 
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de quantidade."); // Mensagem ajustada
+                throw new Error("Produto não encontrado para atualização de quantidade."); 
             }
-
-            // Calcula a diferença e usa os métodos de aumento/diminuição da entidade
-            const currentQuantidade = productToUpdate.quantidade; // RENOMEADO: balance para quantidade
-            const newQuantidade = updateDto.quantidade; // RENOMEADO: balance para quantidade
+            const currentQuantidade = productToUpdate.quantidade; 
+            const newQuantidade = updateDto.quantidade; 
 
             if (newQuantidade > currentQuantidade) {
-                productToUpdate.increaseProduct(newQuantidade - currentQuantidade); // RENOMEADO: balance para quantidade
+                productToUpdate.increaseProduct(newQuantidade - currentQuantidade); 
             } else if (newQuantidade < currentQuantidade) {
-                productToUpdate.decreaseProduct(currentQuantidade - newQuantidade); // RENOMEADO: balance para quantidade
+                productToUpdate.decreaseProduct(currentQuantidade - newQuantidade); 
             }
-
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
             return mapProductToFullProductDto(updatedProductEntity);
         } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar quantidade do produto ${updateDto.id}:`, error); // Mensagem ajustada
-            throw new Error(`Falha ao atualizar quantidade do produto: ${error.message}`); // Mensagem ajustada
+            console.error(`Erro no serviço ao atualizar quantidade do produto ${updateDto.id}:`, error); 
+            throw new Error(`Falha ao atualizar quantidade do produto: ${error.message}`); 
         }
     }
 
     /**
-     * Atualiza as categorias de um produto.
+     * Atualiza a categoria de um produto.
      */
-    public async updateCategories(updateDto: ProductDtos.UpdateProductCategoriesDto): Promise<ProductDtos.FullProductDto | null> {
+    public async updateCategory(updateDto: ProductDtos.UpdateProductCategoryDto): Promise<ProductDtos.FullProductDto | null> { // CORREÇÃO: updateCategories para updateCategory
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de categorias.");
+                throw new Error("Produto não encontrado para atualização de categoria."); // Mensagem ajustada
             }
 
-            productToUpdate.updateCategories(updateDto.categories);
+            productToUpdate.updateCategory(updateDto.category); // CORREÇÃO: Chama updateCategory (singular)
             const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
 
             if (!updatedProductEntity) {
@@ -251,15 +237,15 @@ export class ProductService {
             }
             return mapProductToFullProductDto(updatedProductEntity);
         } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar categorias do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar categorias do produto: ${error.message}`);
+            console.error(`Erro no serviço ao atualizar categoria do produto ${updateDto.id}:`, error); // Mensagem ajustada
+            throw new Error(`Falha ao atualizar categoria do produto: ${error.message}`); // Mensagem ajustada
         }
     }
 
     /**
      * Atualiza a descrição de um produto.
      */
-    public async updateDescription(updateDto: ProductDtos.UpdateProductDescriptionDto): Promise<ProductDtos.FullProductDto | null> { // NOVO MÉTODO
+    public async updateDescription(updateDto: ProductDtos.UpdateProductDescriptionDto): Promise<ProductDtos.FullProductDto | null> { 
         try {
             const productToUpdate = await this.productRepository.findById(updateDto.id);
             if (!productToUpdate) {
