@@ -38,7 +38,7 @@ export interface IProductRepository {
      * @param searchTerm O termo a ser usado para filtrar produtos por nome, SKU ou descrição.
      * @returns Um array de entidades Product. Pode ser um array vazio se não houver produtos.
      */
-    findAll(searchTerm?: string): Promise<Product[]>; // <<-- ATUALIZADO: Aceita searchTerm
+    findAll(searchTerm?: string): Promise<Product[]>;
 
     /**
      * Atualiza um produto existente no banco de dados.

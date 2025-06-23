@@ -3,12 +3,11 @@
  */
 export type CreateProductDto = {
     name: string;
-    description?: string; // ADICIONADO: Propriedade para a descrição (opcional, conforme JSON de exemplo)
+    description?: string; // Propriedade para a descrição (opcional)
     price: number;
     sku: string;
-    quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
-    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
-    // 'origin' REMOVIDO: Não existe mais na entidade Product
+    quantity: number; // RENOMEADO: 'quantidade' agora é 'quantity'
+    category?: string; // 'categories' agora é 'category' (string única)
 };
 
 /**
@@ -38,23 +37,23 @@ export type UpdateProductSkuDto = {
 /**
  * DTO para atualização da quantidade (estoque) de um produto.
  */
-export type UpdateProductQuantidadeDto = { // RENOMEADO: UpdateProductBalanceDto para UpdateProductQuantidadeDto
+export type UpdateProductQuantityDto = { // RENOMEADO: UpdateProductQuantidadeDto para UpdateProductQuantityDto
     id: string;
-    quantidade: number; // RENOMEADO: 'balance' para 'quantidade'
+    quantity: number; // RENOMEADO: 'quantidade' para 'quantity'
 };
 
 /**
  * DTO para atualização da categoria de um produto.
  */
-export type UpdateProductCategoryDto = { // CORREÇÃO: UpdateProductCategoriesDto para UpdateProductCategoryDto
+export type UpdateProductCategoryDto = {
     id: string;
-    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
+    category?: string; // 'categories' agora é 'category' (string única)
 };
 
 /**
  * DTO para atualização da descrição de um produto.
  */
-export type UpdateProductDescriptionDto = { // NOVO DTO: Para atualizar a descrição
+export type UpdateProductDescriptionDto = {
     id: string;
     description?: string;
 };
@@ -73,12 +72,11 @@ export type DeleteProductDto = {
 export type FullProductDto = {
     id: string;
     name: string;
-    description?: string; // ADICIONADO: Inclui a propriedade 'description'
+    description?: string; // Inclui a propriedade 'description'
     price: number;
     sku: string;
-    quantidade: number; // RENOMEADO: 'balance' agora é 'quantidade'
-    category?: string; // CORREÇÃO: 'categories' agora é 'category' (string única)
-    // 'origin' REMOVIDO: Não existe mais na entidade Product
+    quantity: number; // RENOMEADO: 'quantidade' agora é 'quantity'
+    category?: string; // 'categories' agora é 'category' (string única)
     createdAt?: Date; // Opcional: Se seu DB gerencia
     updatedAt?: Date; // Opcional: Se seu DB gerencia
 };
@@ -88,4 +86,4 @@ export type FullProductDto = {
  * Atualmente idêntico ao FullProductDto, mas pode ser diferenciado no futuro
  * para remover campos sensíveis se necessário.
  */
-export type SafeProductDto = FullProductDto; // Reflete as mudanças em FullProductDto
+export type SafeProductDto = FullProductDto;

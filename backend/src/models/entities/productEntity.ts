@@ -5,12 +5,11 @@
 type ProductProps = {
     id?: string;
     name: string;
-    description?: string; // Propriedade para a "Descrição"
+    description?: string;
     price: number;
     sku: string;
-    quantidade: number; // <<-- RENOMEADO: 'balance' agora é 'quantidade'
-    category?: string; // <<-- MODIFICADO: 'categories' agora é 'category' e é uma string opcional
-    // 'origin' removido
+    quantity: number; // <<-- RENOMEADO: 'quantidade' agora é 'quantity'
+    category?: string;
 };
 
 /**
@@ -18,12 +17,10 @@ type ProductProps = {
  */
 export class Product {
     private constructor(private props: ProductProps) {
-        // Validações no construtor para garantir estado inicial válido
         if (props.price < 0) {
             throw new Error("O preço do produto não pode ser negativo.");
         }
-        // Validação RENOMEADA: 'balance' para 'quantidade'
-        if (props.quantidade < 0) {
+        if (props.quantity < 0) { // <<-- RENOMEADO
             throw new Error("A quantidade inicial do produto não pode ser negativa.");
         }
     }
@@ -36,13 +33,11 @@ export class Product {
         name: string,
         price: number,
         sku: string,
-        quantidade: number, // <<-- RENOMEADO: 'balance' agora é 'quantidade'
-        description?: string, // Parâmetro opcional para descrição
-        category?: string, // <<-- MODIFICADO: 'categories' agora é 'category' e é uma string opcional
-        // 'origin' removido dos parâmetros
+        quantity: number, // <<-- RENOMEADO
+        description?: string,
+        category?: string,
     ): Product {
-        // Objeto passado para o construtor, 'quantidade', 'description' e 'category'
-        return new Product({ name, price, sku, quantidade, description, category });
+        return new Product({ name, price, sku, quantity, description, category });
     }
 
     /**
@@ -59,7 +54,6 @@ export class Product {
     // --- Getters para acesso às propriedades ---
     public get id(): string {
         if (!this.props.id) {
-            // Lança um erro se tentar acessar o ID de um produto que ainda não foi persistido
             throw new Error(`O produto "${this.props.name}" ainda não possui um ID.`);
         }
         return this.props.id;
@@ -69,7 +63,7 @@ export class Product {
         return this.props.name;
     }
 
-    public get description(): string | undefined { // Getter para a descrição
+    public get description(): string | undefined {
         return this.props.description;
     }
 
@@ -81,16 +75,12 @@ export class Product {
         return this.props.sku;
     }
 
-    // 'origin' getter removido
-
-    public get category(): string | undefined { // <<-- MODIFICADO: Getter para 'category' (singular)
-        // Retorna string vazia se não houver categoria definida
+    public get category(): string | undefined {
         return this.props.category || '';
     }
 
-    // RENOMEADO: Getter para a quantidade
-    public get quantidade(): number {
-        return this.props.quantidade;
+    public get quantity(): number { // <<-- RENOMEADO
+        return this.props.quantity;
     }
 
     // --- Métodos de Comportamento (Lógica de Negócio) ---
@@ -104,7 +94,7 @@ export class Product {
         if (amount <= 0) {
             throw new Error("A quantidade para adicionar ao estoque deve ser maior que zero.");
         }
-        this.props.quantidade += amount; // <<-- RENOMEADO
+        this.props.quantity += amount; // <<-- RENOMEADO
     }
 
     /**
@@ -116,13 +106,12 @@ export class Product {
         if (amount <= 0) {
             throw new Error("A quantidade para remover do estoque deve ser maior que zero.");
         }
-        // Validação RENOMEADA: 'balance' para 'quantidade'
-        if (amount > this.props.quantidade) {
+        if (amount > this.props.quantity) { // <<-- RENOMEADO
             throw new Error(
                 "A quantia solicitada para remoção de estoque é maior que a quantia em estoque!",
             );
         }
-        this.props.quantidade -= amount; // <<-- RENOMEADO
+        this.props.quantity -= amount; // <<-- RENOMEADO
     }
 
     /**
@@ -169,13 +158,11 @@ export class Product {
         this.props.description = newDescription;
     }
 
-    // 'updateOrigin' método removido
-
     /**
      * Define ou atualiza a categoria do produto.
      * @param newCategory A nova categoria como string.
      */
-    public updateCategory(newCategory?: string): void { // <<-- MODIFICADO: 'updateCategories' agora é 'updateCategory' e aceita string
+    public updateCategory(newCategory?: string): void {
         this.props.category = newCategory;
     }
 }

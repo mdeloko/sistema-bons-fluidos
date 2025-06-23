@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import * as ProductDtos from "../models/dtos/productDtos.js"; // Importa todos os DTOs sob o namespace ProductDtos
-import { ProductService } from "../models/services/productService.js"; // Ajuste o caminho conforme a estrutura do seu projeto
-import { EHttpStatusCode } from "../@types/httpStatusCode.js"; // Importa EHttpStatusCode do seu arquivo compartilhado
+import * as ProductDtos from "../models/dtos/productDtos.js";
+import { ProductService } from "../models/services/productService.js";
+import { EHttpStatusCode } from "../@types/httpStatusCode.js";
 
 /**
  * ProductController lida com as requisições HTTP para recursos de produto.
@@ -19,16 +19,16 @@ export class ProductController {
         const productData: ProductDtos.CreateProductDto = req.body;
         console.log("Tentativa de criação de produto com dados:", productData);
 
-        // Validação básica das propriedades obrigatórias (name, price, sku, quantidade)
+        // Validação básica das propriedades obrigatórias (name, price, sku, quantity)
         // 'description' e 'category' são opcionais no DTO.
         if (
             !productData.name ||
             !productData.price ||
             !productData.sku ||
-            productData.quantidade === undefined
+            productData.quantity === undefined
         ) {
             res.status(EHttpStatusCode.BAD_REQUEST)
-                .json({ error: "Faltando propriedades obrigatórias (name, price, sku, quantidade)!" })
+                .json({ error: "Faltando propriedades obrigatórias (name, price, sku, quantity)!" })
                 .send();
             return;
         }
@@ -99,13 +99,13 @@ export class ProductController {
                     const skuDto: ProductDtos.UpdateProductSkuDto = { id, sku: valueToUpdateTo };
                     updatedProduct = await this.productService.updateSku(skuDto);
                     break;
-                case "quantidade": // RENOMEADO: 'balance' para 'quantidade'
-                    const quantidadeDto: ProductDtos.UpdateProductQuantidadeDto = { id, quantidade: Number(valueToUpdateTo) };
-                    updatedProduct = await this.productService.updateQuantidade(quantidadeDto);
+                case "quantity": // Renomeado
+                    const quantityDto: ProductDtos.UpdateProductQuantityDto = { id, quantity: Number(valueToUpdateTo) }; // DTO renomeado
+                    updatedProduct = await this.productService.updateQuantity(quantityDto); // Método renomeado
                     break;
-                case "category": // CORREÇÃO: 'categories' para 'category'
-                    const categoryDto: ProductDtos.UpdateProductCategoryDto = { id, category: valueToUpdateTo }; // DTO RENOMEADO
-                    updatedProduct = await this.productService.updateCategory(categoryDto); // MÉTODO RENOMEADO
+                case "category":
+                    const categoryDto: ProductDtos.UpdateProductCategoryDto = { id, category: valueToUpdateTo };
+                    updatedProduct = await this.productService.updateCategory(categoryDto);
                     break;
                 case "description":
                     const descriptionDto: ProductDtos.UpdateProductDescriptionDto = { id, description: valueToUpdateTo };
@@ -121,11 +121,13 @@ export class ProductController {
             if (updatedProduct) {
                 res.status(EHttpStatusCode.OK).json(updatedProduct);
             } else {
+                // Se o serviço retornar null, pode ser que o produto não foi encontrado
                 res.status(EHttpStatusCode.NOT_FOUND)
                     .json({ error: "Produto não encontrado." });
             }
         } catch (err: any) {
             console.error("Erro ao atualizar produto:", err);
+            // Reflete erros específicos lançados pelo serviço/repositório
             if (err.message.includes("não encontrado") || err.message.includes("não existe")) {
                 res.status(EHttpStatusCode.NOT_FOUND)
                    .json({ error: err.message });
@@ -243,11 +245,9 @@ export class ProductController {
      * Retorna 200 OK com um array de produtos.
      */
     public async getAllProducts(req: Request, res: Response): Promise<void> {
-        // Pega o parâmetro 'search' da query string. Pode ser undefined.
         const searchTerm = req.query.search as string | undefined; 
 
         try {
-            // Passa o searchTerm para o serviço
             const products = await this.productService.findAll(searchTerm); 
             res.status(EHttpStatusCode.OK).json(products);
         } catch (err: any) {

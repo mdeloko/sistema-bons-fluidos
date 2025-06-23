@@ -1,6 +1,6 @@
-import DBConnection from "../../utils/db.js"; // Ajuste o caminho conforme necessário para sua conexão com o DB
-import { Product } from "../entities/productEntity.js"; // Caminho para sua entidade Product
-import { IProductRepository } from "./IProductRepository.js"; // Caminho para a interface que definimos
+import DBConnection from "../../utils/db.js";
+import { Product } from "../entities/productEntity.js";
+import { IProductRepository } from "./IProductRepository.js";
 import { QueryResult, DatabaseError } from "pg";
 
 /**
@@ -17,23 +17,18 @@ export class ProductRepository implements IProductRepository {
      * @throws {Error} Se houver um erro de banco de dados (ex: SKU duplicado).
      */
     public async create(product: Product): Promise<Product> {
-        // Conecta ao banco de dados usando a utilidade DBConnection
         await using db = await DBConnection.connect();
-        // Desestruturando: 'categories' agora é 'category'
-        const { name, price, sku, quantidade, category, description } = product; 
+        // Desestruturando: 'quantidade' agora é 'quantity'
+        const { name, price, sku, quantity, category, description } = product; 
 
         try {
-            // Executa o comando INSERT e retorna todos os campos para reconstruir a entidade
-            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao
-            // PARÂMETROS: name, price, sku, quantidade, category, description
             const result: QueryResult = await db.query(
                 `INSERT INTO produtos (nome, preco, sku, quantidade, categoria_id, descricao)
                  VALUES ($1, $2, $3, $4, $5, $6)
                  RETURNING id, nome, preco, sku, quantidade, categoria_id, descricao;`, 
-                [name, price, sku, quantidade, category || null, description] // CORREÇÃO: Passando 'category' diretamente
+                [name, price, sku, quantity, category || null, description] 
             );
 
-            // Reconstitui a entidade Product com os dados retornados pelo DB
             const newProductData = result.rows[0];
             return Product.fromExisting({
                 id: newProductData.id,
@@ -41,8 +36,8 @@ export class ProductRepository implements IProductRepository {
                 description: newProductData.descricao, 
                 price: parseFloat(newProductData.preco), 
                 sku: newProductData.sku,
-                quantidade: parseInt(newProductData.quantidade, 10), 
-                category: newProductData.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                quantity: parseInt(newProductData.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                category: newProductData.categoria_id, 
             });
 
         } catch (error: any) {
@@ -63,7 +58,6 @@ export class ProductRepository implements IProductRepository {
     public async findById(id: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE id = $1;", 
                 [id]
@@ -78,8 +72,8 @@ export class ProductRepository implements IProductRepository {
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantidade: parseInt(row.quantidade, 10), 
-                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    category: row.categoria_id, 
                 });
             }
             return null; // Nenhuma linha encontrada
@@ -99,7 +93,6 @@ export class ProductRepository implements IProductRepository {
     public async findBySku(sku: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE sku = $1;", 
                 [sku]
@@ -113,8 +106,8 @@ export class ProductRepository implements IProductRepository {
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantidade: parseInt(row.quantidade, 10), 
-                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    category: row.categoria_id, 
                 });
             }
             return null;
@@ -133,7 +126,6 @@ export class ProductRepository implements IProductRepository {
     public async findByName(name: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
-            // Selecionando 'categoria_id', 'descricao'
             const result: QueryResult = await db.query(
                 "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos WHERE nome ILIKE $1;", 
                 [`%${name}%`] 
@@ -147,8 +139,8 @@ export class ProductRepository implements IProductRepository {
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantidade: parseInt(row.quantidade, 10), 
-                    category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    category: row.categoria_id, 
                 });
             }
             return null;
@@ -164,19 +156,18 @@ export class ProductRepository implements IProductRepository {
      * @param searchTerm O termo a ser usado para filtrar produtos.
      * @returns Um array de entidades Product.
      */
-    public async findAll(searchTerm?: string): Promise<Product[]> { // <<-- RECEBE searchTerm
+    public async findAll(searchTerm?: string): Promise<Product[]> {
         await using db = await DBConnection.connect();
         let query = "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos";
         const values: string[] = [];
 
         if (searchTerm) {
-            // Adiciona a cláusula WHERE para filtrar por nome, SKU ou descricao (case-insensitive)
             query += " WHERE nome ILIKE $1 OR sku ILIKE $1 OR descricao ILIKE $1";
-            values.push(`%${searchTerm}%`); // O parâmetro para a query
+            values.push(`%${searchTerm}%`);
         }
 
         try {
-            const result: QueryResult = await db.query(query, values); // Passa a query e os valores
+            const result: QueryResult = await db.query(query, values);
 
             return result.rows.map((row: any) => {
                 try {
@@ -186,8 +177,8 @@ export class ProductRepository implements IProductRepository {
                         description: row.descricao, 
                         price: parseFloat(row.preco), 
                         sku: row.sku,
-                        quantidade: parseInt(row.quantidade, 10), 
-                        category: row.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                        quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                        category: row.categoria_id, 
                     });
                 } catch (entityError: any) {
                     console.error(`Erro ao criar entidade Product a partir da linha do DB (ID: ${row.id || 'N/A'}):`, entityError);
@@ -210,18 +201,16 @@ export class ProductRepository implements IProductRepository {
      */
     public async update(id: string, product: Product): Promise<Product | null> {
         await using db = await DBConnection.connect();
-        // Desestruturando: 'categories' agora é 'category'
-        const { name, price, sku, quantidade, category, description } = product;
+        // Desestruturando: 'quantity' agora é usado
+        const { name, price, sku, quantity, category, description } = product;
 
         try {
-            // COLUNAS SQL: nome, preco, sku, quantidade, categoria_id, descricao
-            // PARÂMETROS: name, price, sku, quantidade, category, description
             const result: QueryResult = await db.query(
                 `UPDATE produtos
                  SET nome = $1, preco = $2, sku = $3, quantidade = $4, categoria_id = $5, descricao = $6
                  WHERE id = $7
                  RETURNING id, nome, preco, sku, quantidade, categoria_id, descricao;`, 
-                [name, price, sku, quantidade, category || null, description, id] // CORREÇÃO: Passando 'category' diretamente
+                [name, price, sku, quantity, category || null, description, id] 
             );
 
             if (result.rowCount && result.rowCount > 0) {
@@ -233,8 +222,8 @@ export class ProductRepository implements IProductRepository {
                     description: updatedProductData.descricao, 
                     price: parseFloat(updatedProductData.preco), 
                     sku: updatedProductData.sku,
-                    quantidade: parseInt(updatedProductData.quantidade, 10), 
-                    category: updatedProductData.categoria_id, // CORREÇÃO: Mapeando 'categoria_id' do DB para 'category' da entidade
+                    quantity: parseInt(updatedProductData.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    category: updatedProductData.categoria_id, 
                 });
             }
             return null; // Nenhuma linha atualizada (produto não encontrado)
