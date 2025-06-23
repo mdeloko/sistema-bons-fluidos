@@ -118,7 +118,7 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
     "status":401
 }
 ```
-### 📍 `GET /users`
+### 📍 `/users`
 
 >GET - Retornará uma lista de usuários se o requisitante for administrador, use o seguinte header de requisição:
 ```json
