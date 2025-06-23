@@ -81,7 +81,7 @@ Aqui estará detalhado a forma de utilização de cada endpoint e funções com 
 #### Endpoints
 Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 
-##### Users
+##### 👤 Users
 - `/users/login`:
 >POST - Envie o corpo abaixo e poderá obter algum retorno listado.
 ```json
@@ -203,7 +203,11 @@ type Request = {
 }
 ```
 
-## 📦 Produtos
+Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/deletado/consultado.
+
+[Voltar ao Índice](#índice)
+
+##### 📦 Products
 
 ### 📍 `POST /products/` *(com token)*
 
@@ -255,7 +259,8 @@ type Request = {
 
 ---
 
-## 🔄 Movimentações
+[Voltar ao Índice](#índice)
+##### 🔄 Transactions
 
 ### 📍 `POST /moviment/` *(com token)*
 
@@ -295,15 +300,6 @@ type Request = {
 ### 📍 `DELETE /moviment/:id_vendas` *(com token)*
 
 **Remover movimentação por ID**
-
-Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/deletado/consultado.
-
-[Voltar ao Índice](#índice)
-
-##### Products
-
-[Voltar ao Índice](#índice)
-##### Transactions
 
 [Voltar ao Índice](#índice)
 
