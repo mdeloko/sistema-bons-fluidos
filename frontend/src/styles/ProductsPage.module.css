@@ -1,0 +1,225 @@
+/* src/styles/ProductsPage.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  background-color: #f0f4f8; /* Fundo suave */
+  min-height: calc(100vh - 60px); /* Altura da tela menos navbar */
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #374151;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #1e293b;
+  font-size: 2.5em;
+  font-weight: 500;
+}
+
+.actionsBar {
+    width: 100%;
+    max-width: 1000px; /* Mantenha consistente com a tabela */
+    display: flex;
+    justify-content: space-between; /* Ajuste para espaçar busca e botão */
+    align-items: center; /* Centraliza verticalmente */
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+    gap: 15px; /* Espaçamento entre os itens da barra de ações */
+}
+
+.primaryButton {
+  background-color: #f48fb1; /* Rosa suave */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primaryButton:hover {
+  background-color: #ec407a; /* Rosa vibrante no hover */
+  transform: translateY(-2px);
+}
+
+.loadingMessage, .errorMessage, .noDataMessage {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1em;
+    color: #555;
+}
+
+.errorMessage {
+    color: #e74c3c;
+    background-color: #ffebeb;
+    border: 1px solid #e74c3c;
+    border-radius: 5px;
+}
+
+.tableContainer {
+    width: 100%;
+    max-width: 1000px;
+    overflow-x: auto; /* Permite rolar horizontalmente em telas pequenas */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.productTable {
+  width: 100%;
+  border-collapse: collapse; /* Remove bordas duplas */
+  margin-top: 20px;
+}
+
+.productTable th,
+.productTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb; /* Borda inferior sutil */
+}
+
+.productTable th {
+  background-color: #f9fafb; /* Fundo para o cabeçalho da tabela */
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.productTable tbody tr:last-child td {
+  border-bottom: none; /* Remove borda inferior da última linha */
+}
+
+.productTable tbody tr:hover {
+  background-color: #f0f4f8; /* Fundo suave no hover da linha */
+}
+
+.actionsCell {
+  text-align: right; /* Alinha botões de ação à direita */
+  white-space: nowrap; /* Evita que os botões quebrem linha */
+}
+
+.editButton, .deleteButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px; /* Espaçamento entre botões de ação */
+  transition: background-color 0.3s ease;
+}
+
+.editButton {
+  background-color: #3498db; /* Azul para editar */
+  color: white;
+}
+
+.editButton:hover {
+  background-color: #2980b9;
+}
+
+.deleteButton {
+  background-color: #e74c3c; /* Vermelho para excluir */
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #c0392b;
+}
+
+/* Responsividade para a tabela */
+@media (max-width: 768px) {
+  .productTable, .tableContainer {
+    border: 0;
+  }
+  .productTable thead {
+    display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+  }
+  .productTable tr {
+    margin-bottom: 10px;
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .productTable td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    font-size: 1em;
+  }
+  .productTable td::before {
+    content: attr(data-label); /* Usa o atributo data-label para exibir o cabeçalho */
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 15px;
+    font-weight: bold;
+    text-align: left;
+    color: #4b5563;
+  }
+  .actionsCell {
+    text-align: center; /* Centraliza botões de ação em telas pequenas */
+    padding-top: 15px;
+  }
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 300px; /* Largura máxima para o campo de busca */
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1em;
+  margin-right: 20px; /* Espaçamento à direita do botão */
+  background-color: #f9fafb;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.searchInput:focus {
+  border-color: #f48fb1;
+  box-shadow: 0 0 0 3px rgba(244, 143, 177, 0.2);
+  outline: none;
+}
+
+/* O actionsBar está repetido aqui, remova a primeira definição se necessário */
+/* Mantenha apenas esta definição do .actionsBar que tem justify-content: space-between */
+.actionsBar {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Media query para responsividade do campo de busca */
+@media (max-width: 768px) {
+    .searchInput {
+        width: 100%;
+        max-width: unset;
+        margin-right: 0;
+    }
+    .actionsBar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .primaryButton {
+        width: 100%;
+    }
+}

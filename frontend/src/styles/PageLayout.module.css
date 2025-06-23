@@ -1,0 +1,14 @@
+/* src/styles/PageLayout.module.css */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinha ao topo para conteúdo que pode rolar */
+  padding: 40px 20px;
+  background-color: #f0f4f8; /* Fundo azul-acinzentado claro */
+  min-height: calc(100vh - 60px); /* Altura da tela menos navbar */
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #374151;
+}

@@ -1,0 +1,182 @@
+/* src/styles/Dashboard.module.css */
+
+.container { /* Use .container ou .dashboardContainer, e ajuste o nome da classe no JSX */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px; /* Mais espaçamento */
+  background-color: #f0f4f8; /* Azul-acinzentado claro */
+  min-height: calc(100vh - 60px); /* Altura da tela menos navbar */
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif; /* Fonte moderna */
+  color: #374151; /* Tom mais escuro para o texto */
+}
+
+.title { /* .title */
+  text-align: center;
+  margin-bottom: 50px; /* Mais espaçamento abaixo do título */
+  color: #1e293b; /* Tom ainda mais escuro para o título */
+  font-size: 2.8em;
+  font-weight: 500; /* Peso da fonte um pouco mais leve */
+}
+
+.summaryCards { /* .summary-cards -> .summaryCards */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px; /* Mais espaçamento entre os cartões */
+  margin-bottom: 50px;
+  width: 100%;
+  max-width: 1000px; /* Largura máxima maior */
+}
+
+.card { /* .card */
+  background-color: #fff; /* Fundo branco */
+  border-radius: 12px; /* Cantos mais arredondados */
+  padding: 30px; /* Mais padding interno */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra mais sutil */
+  text-align: center;
+  flex: 1;
+  min-width: 280px; /* Largura mínima maior */
+  max-width: 320px; /* Largura máxima maior */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transições suaves */
+}
+
+.card:hover {
+  transform: translateY(-2px); /* Efeito de "elevação" */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais forte no hover */
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #4b5563; /* Tom mais suave para o título do cartão */
+  font-size: 1.4em;
+  margin-bottom: 20px;
+}
+
+.card p {
+  font-size: 2.8em; /* Tamanho maior para os números */
+  font-weight: bold;
+  color: #ec407a; /* Rosa mais vibrante */
+  margin-bottom: 0;
+}
+
+/* Cor específica para produtos com baixo estoque - esta é uma estilização inline no JSX */
+/* .card p[style*="color: orange"] { ... } */
+
+/* Estilos para a seção de Movimentações Recentes */
+.recentMovements { /* .recent-movements -> .recentMovements */
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.recentMovements h2 { /* .recent-movements h2 -> .recentMovements h2 */
+  margin-top: 0;
+  color: #1e293b;
+  border-bottom: 1px solid #e5e7eb; /* Borda mais clara */
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.recentMovements ul { /* .recent-movements ul -> .recentMovements ul */
+  list-style: none;
+  padding: 0;
+}
+
+.recentMovements li { /* .recent-movements li -> .recentMovements li */
+  background-color: #f9fafb; /* Cinza muito claro */
+  border: 1px solid #e5e7eb;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px; /* Menos arredondado */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  color: #6b7280; /* Tom mais suave para o texto */
+}
+
+.recentMovements li:last-child {
+  margin-bottom: 0;
+}
+
+.quickActions { /* .quick-actions -> .quickActions */
+    margin-top: 50px;
+    text-align: center;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.quickActions h3 {
+    color: #1e293b;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+}
+
+.button { /* .quick-actions button -> .button (já pode ser global para botões ou específica como .quickActionButton) */
+    background-color: #f48fb1; /* Rosa mais suave */
+    color: white;
+    padding: 15px 30px; /* Mais padding nos botões */
+    border: none;
+    border-radius: 8px; /* Menos arredondado */
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin: 0 15px 20px;
+    min-width: 220px;
+}
+
+.button:hover {
+    background-color: #ec407a; /* Rosa mais vibrante no hover */
+    transform: scale(1.05); /* Leve aumento no hover */
+}
+
+.logoutButton { /* .logoutButton */
+    background-color: #ef5350; /* Vermelho mais moderno */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 50px auto 0;
+}
+
+.logoutButton:hover {
+    background-color: #d32f2f;
+}
+
+/* Ajustes de responsividade - mantenha ou adapte */
+@media (max-width: 768px) {
+  .container { /* Use .container */
+    padding: 30px 15px;
+  }
+  .summaryCards { /* Use .summaryCards */
+    flex-direction: column;
+    align-items: center;
+  }
+  .card {
+    min-width: unset;
+    width: 95%;
+    max-width: 450px;
+  }
+  .recentMovements,
+  .quickActions { /* Use .recentMovements, .quickActions */
+    width: 95%;
+  }
+  .quickActions button {
+    margin: 15px 0;
+    width: 95%;
+  }
+}

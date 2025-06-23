@@ -1,0 +1,37 @@
+name: bons-fluidos-db
+services:
+  postgres:
+    container_name: postgresql-17.5
+    build:
+      context: .
+      dockerfile: pg-dockerfile
+    image: postgres-br:1.0
+    env_file:
+      - ./docker.env
+    environment:
+      - POSTGRES_DB=bons_fluidos
+      - PGDATA=/var/lib/postgresql/17.5/docker
+      - TZ="America/Sao_Paulo"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/17.5/docker
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - pg-net
+  pgadmin4:
+    container_name: pgadmin4
+    image: dpage/pgadmin4:latest
+    env_file:
+      - ./docker.env
+    ports:
+      - 2020:80
+    networks:
+    - pg-net
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+
+networks:
+  pg-net:
+    name: pg-net
+    driver: bridge

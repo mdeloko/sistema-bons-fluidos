@@ -1,0 +1,86 @@
+/* src/pages/RegistroPage.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Adicionado para centralizar verticalmente */
+  padding: 20px;
+  background-color: #f0e4f7; /* Cor de fundo lilás/rosa claro da imagem */
+  min-height: 100vh; /* Garante que o container ocupe toda a altura da tela */
+  width: 100%; /* Garante que o container ocupe toda a largura */
+}
+
+.form {
+  background-color: white;
+  padding: 30px 40px; /* Aumentei um pouco o padding lateral */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px; /* Define uma largura máxima para o formulário */
+  text-align: center; /* Para centralizar o título e o link abaixo */
+}
+
+.title {
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 30px; /* Aumenta um pouco o título */
+  font-weight: 600;
+}
+
+.input {
+  width: 100%; /* Ocupa 100% do form */
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f0e4f7; /* Um rosa bem clarinho, ajuste conforme o seu gosto */
+  font-size: 16px;
+}
+
+.input::placeholder { /* Estiliza o placeholder */
+  color: #999;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #e91e63; /* Rosa mais forte para o botão, como na imagem */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  transition: background-color 0.3s ease; /* Efeito suave no hover */
+}
+
+.button:hover {
+  background-color: #d81b60; /* Um tom mais escuro no hover */
+}
+
+.button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.linkContainer { /* Novo container para o link */
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.link {
+  color: #e91e63; /* Cor do link igual ao botão */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: red;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: left; /* Alinha o erro à esquerda */
+}

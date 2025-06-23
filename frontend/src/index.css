@@ -1,0 +1,70 @@
+/* src/index.css */
+
+/* Reset básico para remover margens e paddings padrão do navegador */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh; /* Mantém 100vh para que a página possa rolar se for alta */
+  box-sizing: border-box; /* Boa prática */
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  /* REMOVIDO: background-color para que cada página defina o seu */
+  /* REMOVIDO: display: flex; flex-direction: column; */
+}
+
+/* REMOVIDO: .main-content-container - este estilo não será mais usado */
+
+/* Seus estilos da Navbar (se não estiverem em um módulo separado) */
+nav {
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+nav ul li {
+  margin-right: 20px;
+}
+
+nav ul li:last-child {
+  margin-right: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #3498db;
+}
+
+nav button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #c0392b;
+}
