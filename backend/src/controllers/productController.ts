@@ -19,8 +19,7 @@ export class ProductController {
         const productData: ProductDtos.CreateProductDto = req.body;
         console.log("Tentativa de criação de produto com dados:", productData);
 
-        // Validação básica das propriedades obrigatórias (name, price, sku, quantity)
-        // 'description' e 'category' são opcionais no DTO.
+        // Validação das propriedades obrigatórias (name, price, sku, quantity)
         if (
             !productData.name ||
             !productData.price ||
@@ -40,13 +39,11 @@ export class ProductController {
                 res.status(EHttpStatusCode.CREATED).json(newProduct);
                 return;
             }
-            // Se o serviço retornar null, pode indicar um conflito (ex: SKU duplicado)
             res.status(EHttpStatusCode.CONFLICT)
                 .json({ error: "Já existe produto associado a este SKU!" });
             return;
         } catch (err: any) {
             console.error("Erro ao criar produto:", err);
-            // Captura erros específicos lançados pelo serviço/repositório e os reflete no status HTTP
             if (err.message.includes("SKU do produto já existe")) {
                 res.status(EHttpStatusCode.CONFLICT)
                    .json({ error: err.message });
@@ -62,68 +59,46 @@ export class ProductController {
     }
 
     /**
-     * Atualiza um produto existente.
-     * Recebe o ID do produto nos parâmetros da URL e o campo a ser atualizado
-     * junto com o novo valor no corpo da requisição.
+     * Atualiza um produto existente com múltiplos campos.
+     * Recebe o ID do produto nos parâmetros da URL e os dados de atualização no corpo da requisição.
      * Retorna 200 OK em caso de sucesso ou um erro.
      */
     public async updateProduct(req: Request, res: Response): Promise<void> {
         const { id } = req.params; // ID do produto a ser atualizado, vindo da URL
-        const { field, valueToUpdateTo } = req.body; // Campo e novo valor, vindos do corpo da requisição
+        // AGORA RECEBE UM DTO COMPLETO DE ATUALIZAÇÃO DO CORPO
+        const updateData: ProductDtos.UpdateProductDto = req.body; 
 
-        // Validação básica dos parâmetros
-        if (!id || !field || valueToUpdateTo === undefined) {
+        // Validação básica: O ID é obrigatório
+        if (!id) {
             res.status(EHttpStatusCode.BAD_REQUEST)
                 .json({
                     status: EHttpStatusCode.BAD_REQUEST,
-                    error: "Faltando parâmetros (id na URL, field ou valueToUpdateTo no corpo da requisição)!",
+                    error: "ID do produto faltando na URL para atualização!",
+                })
+                .send();
+            return;
+        }
+
+        // Validação: Pelo menos um campo deve ser fornecido para atualização
+        if (Object.keys(updateData).length === 0) {
+            res.status(EHttpStatusCode.BAD_REQUEST)
+                .json({
+                    status: EHttpStatusCode.BAD_REQUEST,
+                    error: "Nenhum campo fornecido para atualização!",
                 })
                 .send();
             return;
         }
 
         try {
-            let updatedProduct: ProductDtos.FullProductDto | null = null;
-
-            // Usa um switch para chamar o método de serviço correto com o DTO apropriado
-            switch (field) {
-                case "name":
-                    const nameDto: ProductDtos.UpdateProductNameDto = { id, name: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateName(nameDto);
-                    break;
-                case "price":
-                    const priceDto: ProductDtos.UpdateProductPriceDto = { id, price: Number(valueToUpdateTo) };
-                    updatedProduct = await this.productService.updatePrice(priceDto);
-                    break;
-                case "sku":
-                    const skuDto: ProductDtos.UpdateProductSkuDto = { id, sku: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateSku(skuDto);
-                    break;
-                case "quantity": // Renomeado
-                    const quantityDto: ProductDtos.UpdateProductQuantityDto = { id, quantity: Number(valueToUpdateTo) }; // DTO renomeado
-                    updatedProduct = await this.productService.updateQuantity(quantityDto); // Método renomeado
-                    break;
-                case "category":
-                    const categoryDto: ProductDtos.UpdateProductCategoryDto = { id, category: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateCategory(categoryDto);
-                    break;
-                case "description":
-                    const descriptionDto: ProductDtos.UpdateProductDescriptionDto = { id, description: valueToUpdateTo };
-                    updatedProduct = await this.productService.updateDescription(descriptionDto);
-                    break;
-                default:
-                    res.status(EHttpStatusCode.BAD_REQUEST)
-                        .json({ error: "Campo de atualização inválido!" })
-                        .send();
-                    return;
-            }
+            // Chama um novo método no serviço que aceita o ID e o DTO de atualização
+            const updatedProduct = await this.productService.updateProductFields(id, updateData);
 
             if (updatedProduct) {
                 res.status(EHttpStatusCode.OK).json(updatedProduct);
             } else {
-                // Se o serviço retornar null, pode ser que o produto não foi encontrado
                 res.status(EHttpStatusCode.NOT_FOUND)
-                    .json({ error: "Produto não encontrado." });
+                    .json({ error: "Produto não encontrado para atualização." });
             }
         } catch (err: any) {
             console.error("Erro ao atualizar produto:", err);
@@ -206,7 +181,7 @@ export class ProductController {
             console.error("Erro ao buscar produto por ID:", err);
             res.status(EHttpStatusCode.INTERNAL_SERVER_ERROR)
                 .json({ error: err.message || "Erro interno do servidor ao buscar produto." });
-        }
+            }
     }
 
     /**

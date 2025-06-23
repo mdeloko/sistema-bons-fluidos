@@ -3,15 +3,28 @@
  */
 export type CreateProductDto = {
     name: string;
-    description?: string; // Propriedade para a descrição (opcional)
+    description?: string;
     price: number;
     sku: string;
-    quantity: number; // RENOMEADO: 'quantidade' agora é 'quantity'
-    category?: string; // 'categories' agora é 'category' (string única)
+    quantity: number;
+    category?: string;
 };
 
 /**
- * DTO para atualização do nome de um produto.
+ * DTO para atualização de um produto com múltiplos campos.
+ * Todos os campos são opcionais, pois nem todos precisam ser atualizados de uma vez.
+ */
+export type UpdateProductDto = {
+    name?: string;
+    description?: string;
+    price?: number;
+    sku?: string;
+    quantity?: number;
+    category?: string;
+};
+
+/**
+ * DTO para atualização do nome de um produto (pode ser mantido se ainda houver rotas específicas).
  */
 export type UpdateProductNameDto = {
     id: string;
@@ -19,7 +32,7 @@ export type UpdateProductNameDto = {
 };
 
 /**
- * DTO para atualização do preço de um produto.
+ * DTO para atualização do preço de um produto (pode ser mantido).
  */
 export type UpdateProductPriceDto = {
     id: string;
@@ -27,7 +40,7 @@ export type UpdateProductPriceDto = {
 };
 
 /**
- * DTO para atualização do SKU de um produto.
+ * DTO para atualização do SKU de um produto (pode ser mantido).
  */
 export type UpdateProductSkuDto = {
     id: string;
@@ -35,23 +48,23 @@ export type UpdateProductSkuDto = {
 };
 
 /**
- * DTO para atualização da quantidade (estoque) de um produto.
+ * DTO para atualização da quantidade (estoque) de um produto (pode ser mantido).
  */
-export type UpdateProductQuantityDto = { // RENOMEADO: UpdateProductQuantidadeDto para UpdateProductQuantityDto
+export type UpdateProductQuantityDto = {
     id: string;
-    quantity: number; // RENOMEADO: 'quantidade' para 'quantity'
+    quantity: number;
 };
 
 /**
- * DTO para atualização da categoria de um produto.
+ * DTO para atualização da categoria de um produto (pode ser mantido).
  */
 export type UpdateProductCategoryDto = {
     id: string;
-    category?: string; // 'categories' agora é 'category' (string única)
+    category?: string;
 };
 
 /**
- * DTO para atualização da descrição de um produto.
+ * DTO para atualização da descrição de um produto (pode ser mantido).
  */
 export type UpdateProductDescriptionDto = {
     id: string;
@@ -72,13 +85,13 @@ export type DeleteProductDto = {
 export type FullProductDto = {
     id: string;
     name: string;
-    description?: string; // Inclui a propriedade 'description'
+    description?: string;
     price: number;
     sku: string;
-    quantity: number; // RENOMEADO: 'quantidade' agora é 'quantity'
-    category?: string; // 'categories' agora é 'category' (string única)
-    createdAt?: Date; // Opcional: Se seu DB gerencia
-    updatedAt?: Date; // Opcional: Se seu DB gerencia
+    quantity: number;
+    category?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 };
 
 /**

@@ -3,22 +3,10 @@ import { Product } from "../entities/productEntity.js";
 import { IProductRepository } from "./IProductRepository.js";
 import { QueryResult, DatabaseError } from "pg";
 
-/**
- * Implementação concreta do repositório de produtos para PostgreSQL.
- * Responsável por todas as interações diretas com o banco de dados para a entidade Product.
- */
 export class ProductRepository implements IProductRepository {
 
-    /**
-     * Cria um novo produto no banco de dados.
-     * Insere os dados da entidade Product na tabela 'produtos'.
-     * @param product A entidade Product a ser criada.
-     * @returns A entidade Product criada, com o ID gerado pelo banco de dados.
-     * @throws {Error} Se houver um erro de banco de dados (ex: SKU duplicado).
-     */
     public async create(product: Product): Promise<Product> {
         await using db = await DBConnection.connect();
-        // Desestruturando: 'quantidade' agora é 'quantity'
         const { name, price, sku, quantity, category, description } = product; 
 
         try {
@@ -36,7 +24,7 @@ export class ProductRepository implements IProductRepository {
                 description: newProductData.descricao, 
                 price: parseFloat(newProductData.preco), 
                 sku: newProductData.sku,
-                quantity: parseInt(newProductData.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                quantity: parseInt(newProductData.quantidade, 10), 
                 category: newProductData.categoria_id, 
             });
 
@@ -49,12 +37,6 @@ export class ProductRepository implements IProductRepository {
         }
     }
 
-    /**
-     * Busca um produto no banco de dados pelo seu ID.
-     * @param id O ID único do produto a ser buscado.
-     * @returns A entidade Product encontrada, ou null se nenhum produto for encontrado.
-     * @throws {Error} Se houver um erro de banco de dados.
-     */
     public async findById(id: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
@@ -65,31 +47,23 @@ export class ProductRepository implements IProductRepository {
 
             if (result.rowCount && result.rowCount > 0) {
                 const row: any = result.rows[0];
-                
                 return Product.fromExisting({
                     id: row.id,
                     name: row.nome, 
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    quantity: parseInt(row.quantidade, 10), 
                     category: row.categoria_id, 
                 });
             }
-            return null; // Nenhuma linha encontrada
+            return null;
         } catch (error: any) {
             console.error(`Erro no repositório ao buscar produto por ID ${id}:`, error);
             throw new Error(`Falha ao buscar produto por ID: ${error.message}`);
         }
     }
 
-    /**
-     * Busca um produto no banco de dados pelo seu SKU.
-     * Utilizado para verificar a unicidade do SKU antes da criação/atualização.
-     * @param sku O SKU do produto a ser buscado.
-     * @returns A entidade Product encontrada, ou null se nenhum produto for encontrado.
-     * @throws {Error} Se houver um erro de banco de dados.
-     */
     public async findBySku(sku: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
@@ -106,7 +80,7 @@ export class ProductRepository implements IProductRepository {
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    quantity: parseInt(row.quantidade, 10), 
                     category: row.categoria_id, 
                 });
             }
@@ -117,12 +91,6 @@ export class ProductRepository implements IProductRepository {
         }
     }
 
-    /**
-     * Busca um produto no banco de dados pelo seu nome.
-     * @param name O nome do produto a ser buscado.
-     * @returns A entidade Product encontrada, ou null se nenhum produto for encontrado.
-     * @throws {Error} Se houver um erro de banco de dados.
-     */
     public async findByName(name: string): Promise<Product | null> {
         await using db = await DBConnection.connect();
         try {
@@ -139,7 +107,7 @@ export class ProductRepository implements IProductRepository {
                     description: row.descricao, 
                     price: parseFloat(row.preco), 
                     sku: row.sku,
-                    quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    quantity: parseInt(row.quantidade, 10), 
                     category: row.categoria_id, 
                 });
             }
@@ -150,12 +118,6 @@ export class ProductRepository implements IProductRepository {
         }
     }
 
-    /**
-     * Busca todos os produtos no banco de dados, opcionalmente filtrando por um termo de busca.
-     * O filtro é aplicado nas colunas 'nome', 'sku' e 'descricao'.
-     * @param searchTerm O termo a ser usado para filtrar produtos.
-     * @returns Um array de entidades Product.
-     */
     public async findAll(searchTerm?: string): Promise<Product[]> {
         await using db = await DBConnection.connect();
         let query = "SELECT id, nome, preco, sku, quantidade, categoria_id, descricao FROM produtos";
@@ -177,7 +139,7 @@ export class ProductRepository implements IProductRepository {
                         description: row.descricao, 
                         price: parseFloat(row.preco), 
                         sku: row.sku,
-                        quantity: parseInt(row.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                        quantity: parseInt(row.quantidade, 10), 
                         category: row.categoria_id, 
                     });
                 } catch (entityError: any) {
@@ -193,15 +155,15 @@ export class ProductRepository implements IProductRepository {
 
     /**
      * Atualiza um produto existente no banco de dados.
-     * O produto é identificado pelo seu ID.
+     * Recebe o ID e a entidade Product com os dados já atualizados (do serviço).
      * @param id O ID do produto a ser atualizado.
-     * @param product A entidade Product contendo os dados atualizados.
+     * @param product A entidade Product com os campos já modificados.
      * @returns A entidade Product atualizada (com os dados mais recentes do DB), ou null se o produto não for encontrado.
      * @throws {Error} Se houver um erro de banco de dados (ex: SKU duplicado).
      */
     public async update(id: string, product: Product): Promise<Product | null> {
         await using db = await DBConnection.connect();
-        // Desestruturando: 'quantity' agora é usado
+        // Desestruturando os campos da entidade Product (já atualizados pelo serviço)
         const { name, price, sku, quantity, category, description } = product;
 
         try {
@@ -215,14 +177,13 @@ export class ProductRepository implements IProductRepository {
 
             if (result.rowCount && result.rowCount > 0) {
                 const updatedProductData: any = result.rows[0];
-                
                 return Product.fromExisting({
                     id: updatedProductData.id,
                     name: updatedProductData.nome, 
                     description: updatedProductData.descricao, 
                     price: parseFloat(updatedProductData.preco), 
                     sku: updatedProductData.sku,
-                    quantity: parseInt(updatedProductData.quantidade, 10), // Mapeando 'quantidade' do DB para 'quantity' da entidade
+                    quantity: parseInt(updatedProductData.quantidade, 10), 
                     category: updatedProductData.categoria_id, 
                 });
             }
@@ -236,12 +197,6 @@ export class ProductRepository implements IProductRepository {
         }
     }
 
-    /**
-     * Deleta um produto do banco de dados pelo seu ID.
-     * @param id O ID do produto a ser deletado.
-     * @returns True se o produto foi deletado com sucesso, false caso contrário (produto não encontrado).
-     * @throws {Error} Se houver um erro de banco de dados.
-     */
     public async delete(id: string): Promise<boolean> {
         await using db = await DBConnection.connect();
         try {

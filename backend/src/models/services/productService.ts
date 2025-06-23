@@ -11,6 +11,7 @@ function mapProductToFullProductDto(product: Product): ProductDtos.FullProductDt
         sku: product.sku,
         quantity: product.quantity,
         category: product.category,
+        // createdAt e updatedAt (se existirem na entidade)
     };
 }
 
@@ -29,13 +30,11 @@ export class ProductService {
                 createDto.name,
                 createDto.price,
                 createDto.sku,
-                createDto.quantity, // Usando 'quantity' do DTO
+                createDto.quantity,
                 createDto.description,
                 createDto.category
             );
-
             const createdProductEntity = await this.productRepository.create(newProduct);
-
             return mapProductToFullProductDto(createdProductEntity);
         } catch (error: any) {
             console.error("Erro no serviço ao criar produto:", error);
@@ -79,130 +78,70 @@ export class ProductService {
         }
     }
 
-    public async updateName(updateDto: ProductDtos.UpdateProductNameDto): Promise<ProductDtos.FullProductDto | null> {
-        try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de nome."); 
-            }
-            productToUpdate.updateName(updateDto.name);
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-            if (!updatedProductEntity) {
-                throw new Error("Falha inesperada ao atualizar o produto no repositório.");
-            }
-            return mapProductToFullProductDto(updatedProductEntity);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar nome do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar nome do produto: ${error.message}`);
+    /**
+     * Atualiza múltiplos campos de um produto existente.
+     * @param id O ID do produto a ser atualizado.
+     * @param updateData O DTO com os campos a serem atualizados (UpdateProductDto).
+     * @returns O produto atualizado como FullProductDto ou null se não for encontrado.
+     * @throws {Error} Se houver erros de validação ou de banco de dados.
+     */
+    public async updateProductFields(id: string, updateData: ProductDtos.UpdateProductDto): Promise<ProductDtos.FullProductDto | null> {
+        const productToUpdate = await this.productRepository.findById(id);
+        if (!productToUpdate) {
+            return null; // Retorna null se o produto não for encontrado
         }
-    }
 
-    public async updatePrice(updateDto: ProductDtos.UpdateProductPriceDto): Promise<ProductDtos.FullProductDto | null> {
-        try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de preço.");
-            }
-            productToUpdate.updatePrice(updateDto.price);
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-            if (!updatedProductEntity) {
-                throw new Error("Falha inesperada ao atualizar o produto no repositório.");
-            }
-            return mapProductToFullProductDto(updatedProductEntity);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar preço do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar preço do produto: ${error.message}`);
+        // Aplica as atualizações à entidade
+        if (updateData.name !== undefined) {
+            productToUpdate.updateName(updateData.name);
         }
-    }
-
-    public async updateSku(updateDto: ProductDtos.UpdateProductSkuDto): Promise<ProductDtos.FullProductDto | null> {
-        try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de SKU.");
-            }
-            if (productToUpdate.sku !== updateDto.sku) {
-                const existingProductWithNewSku = await this.productRepository.findBySku(updateDto.sku);
+        if (updateData.price !== undefined) {
+            productToUpdate.updatePrice(updateData.price);
+        }
+        if (updateData.sku !== undefined) {
+            // Lógica de negócio: Verificar se o novo SKU já existe para outro produto
+            if (productToUpdate.sku !== updateData.sku) {
+                const existingProductWithNewSku = await this.productRepository.findBySku(updateData.sku);
                 if (existingProductWithNewSku && existingProductWithNewSku.id !== productToUpdate.id) {
                     throw new Error("SKU já utilizado por outro produto.");
                 }
             }
-            productToUpdate.updateSku(updateDto.sku);
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-            if (!updatedProductEntity) {
-                throw new Error("Falha inesperada ao atualizar o produto no repositório.");
-            }
-            return mapProductToFullProductDto(updatedProductEntity);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar SKU do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar SKU do produto: ${error.message}`);
+            productToUpdate.updateSku(updateData.sku);
         }
-    }
-
-    public async updateQuantity(updateDto: ProductDtos.UpdateProductQuantityDto): Promise<ProductDtos.FullProductDto | null> { // Renomeado updateQuantidade para updateQuantity
-        try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de quantidade."); 
-            }
-            const currentQuantity = productToUpdate.quantity; 
-            const newQuantity = updateDto.quantity;
+        if (updateData.quantity !== undefined) {
+            // A lógica de increase/decreaseProduct é mais complexa, então chamamos o método específico
+            const currentQuantity = productToUpdate.quantity;
+            const newQuantity = updateData.quantity;
 
             if (newQuantity > currentQuantity) {
-                productToUpdate.increaseProduct(newQuantity - currentQuantity); 
+                productToUpdate.increaseProduct(newQuantity - currentQuantity);
             } else if (newQuantity < currentQuantity) {
-                productToUpdate.decreaseProduct(currentQuantity - newQuantity); 
+                productToUpdate.decreaseProduct(currentQuantity - newQuantity);
             }
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-            if (!updatedProductEntity) {
-                throw new Error("Falha inesperada ao atualizar o produto no repositório.");
-            }
-            return mapProductToFullProductDto(updatedProductEntity);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar quantidade do produto ${updateDto.id}:`, error); 
-            throw new Error(`Falha ao atualizar quantidade do produto: ${error.message}`); 
         }
-    }
+        if (updateData.category !== undefined) {
+            productToUpdate.updateCategory(updateData.category);
+        }
+        if (updateData.description !== undefined) {
+            productToUpdate.updateDescription(updateData.description);
+        }
 
-    public async updateCategory(updateDto: ProductDtos.UpdateProductCategoryDto): Promise<ProductDtos.FullProductDto | null> {
+        // Chama o repositório para persistir as mudanças
         try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de categoria.");
-            }
-
-            productToUpdate.updateCategory(updateDto.category);
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
+            const updatedProductEntity = await this.productRepository.update(id, productToUpdate);
             if (!updatedProductEntity) {
                 throw new Error("Falha inesperada ao atualizar o produto no repositório.");
             }
             return mapProductToFullProductDto(updatedProductEntity);
         } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar categoria do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar categoria do produto: ${error.message}`);
+            // Propaga os erros específicos (SKU duplicado, validações da entidade)
+            throw error; 
         }
     }
 
-    public async updateDescription(updateDto: ProductDtos.UpdateProductDescriptionDto): Promise<ProductDtos.FullProductDto | null> { 
-        try {
-            const productToUpdate = await this.productRepository.findById(updateDto.id);
-            if (!productToUpdate) {
-                throw new Error("Produto não encontrado para atualização de descrição.");
-            }
 
-            productToUpdate.updateDescription(updateDto.description);
-            const updatedProductEntity = await this.productRepository.update(productToUpdate.id, productToUpdate);
-
-            if (!updatedProductEntity) {
-                throw new Error("Falha inesperada ao atualizar o produto no repositório.");
-            }
-            return mapProductToFullProductDto(updatedProductEntity);
-        } catch (error: any) {
-            console.error(`Erro no serviço ao atualizar descrição do produto ${updateDto.id}:`, error);
-            throw new Error(`Falha ao atualizar descrição do produto: ${error.message}`);
-        }
-    }
+    // REMOVIDOS: Métodos updateName, updatePrice, updateSku, updateQuantity, updateCategory, updateDescription
+    // Eles foram consolidados em updateProductFields
 
     public async delete(deleteDto: ProductDtos.DeleteProductDto): Promise<boolean> {
         try {
