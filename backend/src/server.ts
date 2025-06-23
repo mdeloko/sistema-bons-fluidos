@@ -11,7 +11,7 @@ const server = express();
 
 server.use(
 	cors({
-		origin: "http://localhost:5173/", // Permita especificamente a origem do seu frontend
+		origin: "http://localhost:5173", // Permita especificamente a origem do seu frontend
 		methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Quais métodos HTTP são permitidos
 		credentials: true, // Se sua aplicação usar cookies/sessões com credenciais
 		optionsSuccessStatus: 204, // Status para respostas de pré-voo OPTIONS
