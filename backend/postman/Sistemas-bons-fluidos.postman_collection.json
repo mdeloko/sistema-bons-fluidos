@@ -4,7 +4,7 @@
 		"name": "Sistemas-bons-fluidos",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "44412593",
-		"_collection_link": "https://gian-2971076.postman.co/workspace/Gian's-Workspace~83da9655-d094-414e-8472-6fd7c20bcd0f/collection/44412593-01696214-0dd3-4f5e-a5f1-53c1701edac7?action=share&source=collection_link&creator=44412593"
+		"_collection_link": "https://gian-2971076.postman.co/workspace/83da9655-d094-414e-8472-6fd7c20bcd0f/collection/44412593-01696214-0dd3-4f5e-a5f1-53c1701edac7?action=share&source=collection_link&creator=44412593"
 	},
 	"item": [
 		{
@@ -63,10 +63,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{URL}}/users/",
+									"raw": "http://localhost:3000/users/",
+									"protocol": "http",
 									"host": [
-										"{{URL}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"users",
 										""
@@ -186,10 +188,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{URL}}/users/login",
+									"raw": "http://localhost:3000/users/login",
+									"protocol": "http",
 									"host": [
-										"{{URL}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"users",
 										"login"
@@ -418,7 +422,74 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/users/",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/users/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "284"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"11c-YqhvIdlzE6cwIj46UwizhNBNdWs\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 05:50:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"ra\": \"admin\",\n        \"nome\": \"Administrador\",\n        \"email\": \"admin@bonsfluidos.com\",\n        \"is_admin\": true\n    },\n    {\n        \"id\": 2,\n        \"ra\": \"1234567\",\n        \"nome\": \"Maria Silva\",\n        \"email\": \"maria.silva@example.com\",\n        \"is_admin\": false\n    },\n    {\n        \"id\": 3,\n        \"ra\": \"9876543\",\n        \"nome\": \"João Admin\",\n        \"email\": \"joao.admin@example.com\",\n        \"is_admin\": true\n    }\n]"
+						}
+					]
 				},
 				{
 					"name": "/users/email/:email",
@@ -437,7 +508,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Maria Silva\",\r\n    \"email\": \"maria.silva@example.com\",\r\n    \"ra\": \"1234567\",\r\n    \"password\": \"SenhaNaosegura123!\",\r\n    \"isAdmin\": true\r\n}",
+							"raw": "{\r\n    \"field\": \"ra\",\r\n    \"valueToUpdateTo\": \"98765432\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,7 +527,84 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/users/email/:email",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"field\": \"ra\",\r\n    \"valueToUpdateTo\": \"98765432\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/email/maria.silva@example.com",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"email",
+										"maria.silva@example.com"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "137"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"89-q2mS/qZ+8+mohRsaaMEsf5KtpHU\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 06:13:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Maria Silva\",\n    \"email\": \"maria.silva@example.com\",\n    \"isAdmin\": false,\n    \"ra\": \"98765432\",\n    \"message\": \"Atualizado com sucesso!\",\n    \"status\": 200\n}"
+						}
+					]
 				},
 				{
 					"name": "/users/ra/:ra",
@@ -473,18 +621,105 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"field\": \"name\",\r\n    \"valueToUpdateTo\": \"Pedro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/ra/{{user_ra}}",
+							"raw": "{{URL}}/users/ra/9876543",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
+								"users",
 								"ra",
-								"{{user_ra}}"
+								"9876543"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/users/ra/:ra",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"field\": \"name\",\r\n    \"valueToUpdateTo\": \"Pedro\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users/ra/9876543",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users",
+										"ra",
+										"9876543"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "128"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"80-8ZIWMYkirvWyje6umJUNdr4unWE\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 13:56:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Pedro\",\n    \"email\": \"joao.admin@example.com\",\n    \"isAdmin\": true,\n    \"ra\": \"9876543\",\n    \"message\": \"Atualizado com sucesso!\",\n    \"status\": 200\n}"
+						}
+					]
 				},
 				{
 					"name": "/users/",
@@ -501,18 +736,105 @@
 						},
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ra\": \"9876543\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/users/",
+							"raw": "{{URL}}/users",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"users",
-								""
+								"users"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/users/",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ra\": \"98765432\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "57"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"39-Org7jCxlzcV51ousfRkHKch5/Mo\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 14:02:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"message\": \"Usuário deletado com sucesso.\",\n    \"status\": 200\n}"
+						}
+					]
 				}
 			]
 		},
@@ -536,7 +858,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Arroz Integral\",\r\n    \"price\": 12.50,\r\n    \"sku\": \"ARZ-INT-001\",\r\n    \"origin\": \"Nacional\",\r\n    \"balance\": 100,\r\n    \"categories\": [\"grãos\", \"alimentos básicos\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"Caneta Esferográfica\",\r\n    \"description\": \"Cor azul, ponta fina, ideal para escrita diária.\",\r\n    \"price\": 2.50,\r\n    \"sku\": \"CAN-ESP-PTA-300\",\r\n    \"quantity\": 500,\r\n    \"category\": \"Pequena\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -556,13 +878,88 @@
 					},
 					"response": [
 						{
-							"name": "Arroz integral",
+							"name": "Folha",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Arroz Integral\",\r\n    \"price\": 12.50,\r\n    \"sku\": \"ARZ-INT-001\",\r\n    \"origin\": \"Nacional\",\r\n    \"balance\": 100,\r\n    \"categories\": [\"grãos\", \"alimentos básicos\"]\r\n}",
+									"raw": "{\r\n    \"name\": \"folha\",\r\n    \"description\": \"branca e de sufite\",\r\n    \"price\": 0.50,\r\n    \"sku\": \"CAN-ESP-FTA-250\",\r\n    \"quantity\": 5,\r\n    \"category\": \"grande\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/products/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "127"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"7f-ALwIwBpaLAAwhNxkIwikGArXWog\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 05:14:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"name\": \"folha\",\n    \"description\": \"branca e de sufite\",\n    \"price\": 0.5,\n    \"sku\": \"CAN-ESP-FTA-250\",\n    \"quantity\": 5,\n    \"category\": \"grande\"\n}"
+						},
+						{
+							"name": "Caneta",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Caneta Esferográfica\",\r\n    \"description\": \"Cor azul, ponta fina, ideal para escrita diária.\",\r\n    \"price\": 2.50,\r\n    \"sku\": \"CAN-ESP-PTA-250\",\r\n    \"quantidade\": 500,\r\n    \"category\": \"Pequena\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -590,7 +987,7 @@
 								},
 								{
 									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:5173/"
+									"value": "http://localhost:5173"
 								},
 								{
 									"key": "Vary",
@@ -606,15 +1003,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "144"
+									"value": "127"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"90-dAftJjuQxnpKydi0QopYxu53jKs\""
+									"value": "W/\"7f-ALwIwBpaLAAwhNxkIwikGArXWog\""
 								},
 								{
 									"key": "Date",
-									"value": "Sun, 22 Jun 2025 06:01:18 GMT"
+									"value": "Mon, 23 Jun 2025 05:14:39 GMT"
 								},
 								{
 									"key": "Connection",
@@ -626,7 +1023,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 3,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
+							"body": "{\n    \"id\": 7,\n    \"name\": \"folha\",\n    \"description\": \"branca e de sufite\",\n    \"price\": 0.5,\n    \"sku\": \"CAN-ESP-FTA-250\",\n    \"quantity\": 5,\n    \"category\": \"grande\"\n}"
 						}
 					]
 				},
@@ -674,32 +1071,34 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/id/1",
+							"raw": "{{URL}}/products/id/3",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"id",
-								"1"
+								"3"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "id 1",
+							"name": "Id 8",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{URL}}/products/id/1",
+									"raw": "http://localhost:3000/products/id/8",
+									"protocol": "http",
 									"host": [
-										"{{URL}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"products",
 										"id",
-										"1"
+										"8"
 									]
 								}
 							},
@@ -713,7 +1112,7 @@
 								},
 								{
 									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:5173/"
+									"value": "http://localhost:5173"
 								},
 								{
 									"key": "Vary",
@@ -729,15 +1128,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "144"
+									"value": "177"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"90-PP4WPUY5DM9SFOjh3SPCRaXUgZA\""
+									"value": "W/\"b1-czFkXorVZMK/SCbV7q3jViQXJhc\""
 								},
 								{
 									"key": "Date",
-									"value": "Sun, 22 Jun 2025 05:55:47 GMT"
+									"value": "Mon, 23 Jun 2025 05:29:25 GMT"
 								},
 								{
 									"key": "Connection",
@@ -749,7 +1148,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 1,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
+							"body": "{\n    \"id\": 8,\n    \"name\": \"Caneta Esferográfica\",\n    \"description\": \"Cor azul, ponta fina, ideal para escrita diária.\",\n    \"price\": 2.5,\n    \"sku\": \"CAN-ESP-PTA-300\",\n    \"quantity\": 500,\n    \"category\": \"Pequena\"\n}"
 						}
 					]
 				},
@@ -769,32 +1168,34 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/name/arroz",
+							"raw": "{{URL}}/products/name/caneta",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
 								"name",
-								"arroz"
+								"caneta"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "Arroz",
+							"name": "Caneta",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{URL}}/products/name/arroz",
+									"raw": "http://localhost:3000/products/name/caneta",
+									"protocol": "http",
 									"host": [
-										"{{URL}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"products",
 										"name",
-										"arroz"
+										"caneta"
 									]
 								}
 							},
@@ -808,7 +1209,7 @@
 								},
 								{
 									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:5173/"
+									"value": "http://localhost:5173"
 								},
 								{
 									"key": "Vary",
@@ -824,15 +1225,15 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "144"
+									"value": "198"
 								},
 								{
 									"key": "ETag",
-									"value": "W/\"90-PP4WPUY5DM9SFOjh3SPCRaXUgZA\""
+									"value": "W/\"c6-qOL2NkUEgNsgVIebqSHvVzwO+nc\""
 								},
 								{
 									"key": "Date",
-									"value": "Sun, 22 Jun 2025 05:57:23 GMT"
+									"value": "Mon, 23 Jun 2025 05:28:39 GMT"
 								},
 								{
 									"key": "Connection",
@@ -844,102 +1245,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 1,\n    \"name\": \"Arroz Integral\",\n    \"price\": 12.5,\n    \"sku\": \"ARZ-INT-001\",\n    \"origin\": \"Nacional\",\n    \"balance\": 100,\n    \"categories\": [\n        \"grãos\",\n        \"alimentos básicos\"\n    ]\n}"
-						}
-					]
-				},
-				{
-					"name": "/products/origin/:origin",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL}}/products/origin/nacional",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"products",
-								"origin",
-								"nacional"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Nacional",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{URL}}/products/origin/nacional",
-									"host": [
-										"{{URL}}"
-									],
-									"path": [
-										"products",
-										"origin",
-										"nacional"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "http://localhost:5173/"
-								},
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Access-Control-Allow-Credentials",
-									"value": "true"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "146"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"92-piRv6wFadBROZI/WiO+HC2M+9Pw\""
-								},
-								{
-									"key": "Date",
-									"value": "Sun, 22 Jun 2025 05:57:41 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Arroz Integral\",\n        \"price\": 12.5,\n        \"sku\": \"ARZ-INT-001\",\n        \"origin\": \"Nacional\",\n        \"balance\": 100,\n        \"categories\": [\n            \"grãos\",\n            \"alimentos básicos\"\n        ]\n    }\n]"
+							"body": "{\n    \"id\": 4,\n    \"name\": \"Caneta Esferográfica\",\n    \"description\": \"Cor preta, ponta fina, ideal para escrita diária.\",\n    \"price\": 2.5,\n    \"sku\": \"CAN-ESP-PTA-001\",\n    \"quantity\": 500,\n    \"category\": \"[\\\"papelaria\\\",\\\"escrita\\\"]\"\n}"
 						}
 					]
 				},
@@ -958,24 +1264,103 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Chaveiro\",\r\n    \"description\": \"para usar na chave\",\r\n    \"price\": 25.00,\r\n    \"sku\": \"SKU-ATUALIZADO-002\",\r\n    \"quantity\": 150,\r\n    \"category\": \"Brindes\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/products/:id",
+							"raw": "{{URL}}/products/3",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"3"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Chaveiro",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Chaveiro\",\r\n    \"description\": \"para usar na chave\",\r\n    \"price\": 25.00,\r\n    \"sku\": \"SKU-ATUALIZADO-002\",\r\n    \"quantity\": 150,\r\n    \"category\": \"Brindes\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/products/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"products",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "135"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"87-SfR+3z4/Ah1XDAaOqp4DJ4oSXqM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 05:42:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"name\": \"Chaveiro\",\n    \"description\": \"para usar na chave\",\n    \"price\": 25,\n    \"sku\": \"SKU-ATUALIZADO-002\",\n    \"quantity\": 150,\n    \"category\": \"Brindes\"\n}"
+						}
+					]
 				},
 				{
 					"name": "/products/:id",
@@ -993,17 +1378,84 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/products/2",
+							"raw": "{{URL}}/products/3",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"products",
-								"2"
+								"3"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Id 3",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/products/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"products",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "44"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2c-cKtpnjwsKK3XEuA2KViZmgE/bWM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 05:42:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Produto excluído com sucesso!\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -1053,7 +1505,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"produto_id\": 1,         // ID do produto (inteiro)\r\n    \"usuario_id\": 2,         // ID do usuário (inteiro)\r\n    \"tipo\": \"entrada\",       // \"entrada\" ou \"saida\" (verificando o ENUM `tipo_movimentacao`)\r\n    \"quantidade_movimentada\": 10,\r\n    \"observacoes\": \"Entrada de estoque inicial\"\r\n}",
+									"raw": "{\r\n    \"produto_id\": 4,         // ID do produto (inteiro)\r\n    \"usuario_id\": 5,         // ID do usuário (inteiro)\r\n    \"tipo\": \"entrada\",       // \"entrada\" ou \"saida\" (verificando o ENUM `tipo_movimentacao`)\r\n    \"quantidade_movimentada\": 10,\r\n    \"observacoes\": \"Entrada de estoque inicial\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1061,10 +1513,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{URL}}/moviment/",
+									"raw": "http://localhost:3000/moviment/",
+									"protocol": "http",
 									"host": [
-										"{{URL}}"
+										"localhost"
 									],
+									"port": "3000",
 									"path": [
 										"moviment",
 										""
@@ -1159,7 +1613,83 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/moviment/",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/moviment/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"moviment",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "192"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"c0-6hhuKKRFJkiez7g7iSQYy+qUVwQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 14:09:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"props\": {\n            \"id_vendas\": 8,\n            \"produto_id\": 4,\n            \"usuario_id\": 5,\n            \"tipo\": \"entrada\",\n            \"quantidade_movimentada\": 10,\n            \"data_movimentacao\": \"2025-06-23T14:09:06.959Z\",\n            \"observacoes\": \"Entrada de estoque inicial\"\n        }\n    }\n]"
+						}
+					]
 				},
 				{
 					"name": "/:id_vendas",
@@ -1177,22 +1707,94 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/:id_vendas",
+							"raw": "{{URL}}/moviment/8",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								":id_vendas"
-							],
-							"variable": [
-								{
-									"key": "id_vendas",
-									"value": ""
-								}
+								"moviment",
+								"8"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/:id_vendas",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/moviment/:id_vendas",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"moviment",
+										":id_vendas"
+									],
+									"variable": [
+										{
+											"key": "id_vendas",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "190"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"be-i406UGjudI8FMKmG6zn2tgflqys\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 14:10:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"props\": {\n        \"id_vendas\": 8,\n        \"produto_id\": 4,\n        \"usuario_id\": 5,\n        \"tipo\": \"entrada\",\n        \"quantidade_movimentada\": 10,\n        \"data_movimentacao\": \"2025-06-23T14:09:06.959Z\",\n        \"observacoes\": \"Entrada de estoque inicial\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "/:id_vendas",
@@ -1209,23 +1811,119 @@
 						},
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantidade_movimentada\": 20,\r\n    \"observacoes\": \"Ajuste na quantidade devido a erro de registro.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/:id_vendas",
+							"raw": "{{URL}}/moviment/:id_vendas",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
+								"moviment",
 								":id_vendas"
 							],
 							"variable": [
 								{
 									"key": "id_vendas",
-									"value": ""
+									"value": "8"
 								}
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/:id_vendas",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantidade_movimentada\": 20,\r\n    \"observacoes\": \"Ajuste na quantidade devido a erro de registro.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/moviment/:id_vendas",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"moviment",
+										":id_vendas"
+									],
+									"variable": [
+										{
+											"key": "id_vendas",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "52"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"34-l3vtxVBtgkM/c/Fuzimash3lj0c\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 14:16:27 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"message\": \"Movimentação atualizada com sucesso.\"\n}"
+						}
+					]
 				},
 				{
 					"name": "/:id_vendas",
@@ -1242,23 +1940,119 @@
 						},
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/:id_vendas",
+							"raw": "{{URL}}/moviment/:id_vendas",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
+								"moviment",
 								":id_vendas"
 							],
 							"variable": [
 								{
 									"key": "id_vendas",
-									"value": ""
+									"value": "8"
 								}
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "/:id_vendas",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/moviment/:id_vendas",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"moviment",
+										":id_vendas"
+									],
+									"variable": [
+										{
+											"key": "id_vendas",
+											"value": "9"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:5173"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "50"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"32-S5d3VB16Ebq3CIscJXc0wq5TWTM\""
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 23 Jun 2025 14:17:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": "{\n    \"message\": \"Movimentação deletada com sucesso.\"\n}"
+						}
+					]
 				}
 			]
 		}

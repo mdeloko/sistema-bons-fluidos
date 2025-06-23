@@ -203,6 +203,99 @@ type Request = {
 }
 ```
 
+## 📦 Produtos
+
+### 📍 `POST /products/` *(com token)*
+
+**Cadastrar novo produto**
+
+```json
+{
+  "name": "Caneta Esferográfica",
+  "description": "Cor azul, ponta fina, ideal para escrita diária.",
+  "price": 2.50,
+  "sku": "CAN-ESP-PTA-300",
+  "quantity": 500,
+  "category": "Pequena"
+}
+```
+
+**Resposta:** 201 Created
+
+### 📍 `GET /products/` *(com token)*
+
+**Listar todos os produtos**
+
+### 📍 `GET /products/id/:id` *(com token)*
+
+**Buscar produto por ID**
+
+### 📍 `GET /products/name/:name` *(com token)*
+
+**Buscar produto por nome**
+
+### 📍 `PUT /products/:id` *(com token)*
+
+**Atualizar produto por ID**
+
+```json
+{
+  "name": "Chaveiro",
+  "description": "para usar na chave",
+  "price": 25.00,
+  "sku": "SKU-ATUALIZADO-002",
+  "quantity": 150,
+  "category": "Brindes"
+}
+```
+
+### 📍 `DELETE /products/:id` *(com token)*
+
+**Excluir produto por ID**
+
+---
+
+## 🔄 Movimentações
+
+### 📍 `POST /moviment/` *(com token)*
+
+**Registrar nova movimentação (entrada ou saída)**
+
+```json
+{
+  "produto_id": 1,
+  "usuario_id": 2,
+  "tipo": "entrada",
+  "quantidade_movimentada": 10,
+  "observacoes": "Entrada de estoque inicial"
+}
+```
+
+**Resposta:** 201 Created
+
+### 📍 `GET /moviment/` *(com token)*
+
+**Listar todas as movimentações**
+
+### 📍 `GET /moviment/:id_vendas` *(com token)*
+
+**Buscar movimentação por ID**
+
+### 📍 `PUT /moviment/:id_vendas` *(com token)*
+
+**Atualizar movimentação**
+
+```json
+{
+  "quantidade_movimentada": 20,
+  "observacoes": "Ajuste na quantidade devido a erro de registro."
+}
+```
+
+### 📍 `DELETE /moviment/:id_vendas` *(com token)*
+
+**Remover movimentação por ID**
+
 Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/deletado/consultado.
 
 [Voltar ao Índice](#índice)
