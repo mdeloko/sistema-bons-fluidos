@@ -81,7 +81,8 @@ Aqui estará detalhado a forma de utilização de cada endpoint e funções com 
 #### Endpoints
 Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 
-##### 👤 Users
+👤
+##### Users 
 - `/users/login`:
 >POST - Envie o corpo abaixo e poderá obter algum retorno listado.
 ```json
@@ -207,7 +208,8 @@ Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/de
 
 [Voltar ao Índice](#índice)
 
-##### 📦 Products
+📦
+##### Products
 
 ### 📍 `POST /products/` *(com token)*
 
@@ -260,7 +262,9 @@ Os retornos irão conter sempre o status e o objeto que foi criado/atualizado/de
 ---
 
 [Voltar ao Índice](#índice)
-##### 🔄 Transactions
+
+🔄
+##### Transactions
 
 ### 📍 `POST /moviment/` *(com token)*
 
