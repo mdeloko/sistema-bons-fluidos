@@ -83,7 +83,8 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
 
 👤
 ##### Users 
-- `/users/login`:
+### 📍 `POST /users/login` *(com token)*
+
 >POST - Envie o corpo abaixo e poderá obter algum retorno listado.
 ```json
 //Enviar
@@ -117,8 +118,8 @@ Aqui ficarão listados os endpoints da aplicação e a forma de utilizá-los.
     "status":401
 }
 ```
+### 📍 `GET /users`
 
-- `/users`:
 >GET - Retornará uma lista de usuários se o requisitante for administrador, use o seguinte header de requisição:
 ```json
 //Header
@@ -165,7 +166,8 @@ type Request = {
 }
 ```
 
-- `/users/email/${email}`
+### 📍 `PUT /users/email/${email}`
+
 >PUT - Envie com o corpo listado abaixo.
 **Obs.: Use essa rota apenas para atualizar o R.A.**
 ```json
@@ -179,8 +181,8 @@ type Request = {
     "valueToUpdateTo":"string",
 }
 ```
+### 📍 `PUT /users/ra/${ra}`
 
-- `/users/ra/${ra}`
 >PUT - Envie com o corpo listado abaixo, e caso a atualização no banco funcionar, retornará OK (200) ou Erro interno do servidor (500).  
 **Obs.: Use esta rota para atualização de tudo, menos R.A.**
 ```json
